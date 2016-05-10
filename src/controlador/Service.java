@@ -13,12 +13,13 @@ import java.io.IOException;
 
 /**
  * @author Rafael Vargas del Moral
+ * @version 1.0
  */
+
 public class Service {
-    public static void loadJson() throws FileNotFoundException, IOException, InvalidYearException,
+    public static void loadJson(File file) throws FileNotFoundException, IOException, InvalidYearException,
     InvalidDurationException, InvalidTackNumberException{
-        
-        JsonReader reader = new JsonReader(new FileReader(new File("sources/discographies.json")));
+        JsonReader reader = new JsonReader(new FileReader(file));
         reader.beginArray();
         String[] campo = new String[7];
         boolean comprobacion = false;

@@ -24,7 +24,19 @@ import javax.swing.ScrollPaneConstants;
 import java.awt.Font;
 import java.awt.Color;
 import javax.swing.JCheckBoxMenuItem;
-
+import javax.swing.JFileChooser;
+import javax.swing.JTable;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 public class Vista {
 	private JFrame frame;
@@ -34,20 +46,27 @@ public class Vista {
 	private JCheckBoxMenuItem abrir;
 	private JCheckBoxMenuItem salir;
 	private JPanel panelSuperior;
-	private JPanel panelInferior;
-	private JList list;
 	private JScrollPane scroll;
+	private JTable tabla;
+	private JFileChooser file;
+	private JLabel lblBuscar;
+	private JTextArea textAreaBuscar;
+	private JButton btnIrMostrarResultado;
+	private GroupLayout groupLayout;
+	private GroupLayout gl_panelSuperior;
+	private JComboBox comboBox;
 
 	
 	public Vista(){
 		inicialize();
+		file = new JFileChooser();
 		Controlador controlador = new Controlador(this); 
 
 	}
 	
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 696, 457);
+		frame.setBounds(100, 100, 768, 517);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -66,61 +85,135 @@ public class Vista {
 		barraMenu.add(editar);
 		
 		panelSuperior = new JPanel();
-		
-		panelInferior = new JPanel();
-		panelInferior.setBackground(Color.GRAY);
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+		groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panelSuperior, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
-						.addComponent(panelInferior, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE))
-					.addContainerGap())
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addComponent(panelSuperior, GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(panelSuperior, GroupLayout.PREFERRED_SIZE, 212, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panelInferior, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addContainerGap())
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addGap(11)
+					.addComponent(panelSuperior, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+					.addGap(93))
 		);
-		GroupLayout gl_panel_1 = new GroupLayout(panelInferior);
-		gl_panel_1.setHorizontalGroup(
-			gl_panel_1.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 660, Short.MAX_VALUE)
-		);
-		gl_panel_1.setVerticalGroup(
-			gl_panel_1.createParallelGroup(Alignment.TRAILING)
-				.addGap(0, 168, Short.MAX_VALUE)
-		);
-		panelInferior.setLayout(gl_panel_1);
-		
-		list = new JList();
-		list.setValueIsAdjusting(true);
-		list.setFont(new Font("Leelawadee", Font.PLAIN, 14));
 
-
-		scroll = new JScrollPane(list);
-		panelSuperior.add(scroll);
-		scroll.setViewportView(list);
+		tabla = new JTable();
+		tabla.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Selecciona un archivo"
+			}
+		));
+		tabla.setBackground(Color.WHITE);
+		tabla.setColumnSelectionAllowed(true);
+		tabla.setCellSelectionEnabled(true);
+		panelSuperior.add(tabla);
+		scroll = new JScrollPane(tabla);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
+		JPanel panel = new JPanel();
+		gl_panelSuperior = new GroupLayout(panelSuperior);
+		gl_panelSuperior.setHorizontalGroup(
+			gl_panelSuperior.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelSuperior.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panelSuperior.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+						.addComponent(scroll, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		gl_panelSuperior.setVerticalGroup(
+			gl_panelSuperior.createParallelGroup(Alignment.TRAILING)
+				.addGroup(Alignment.LEADING, gl_panelSuperior.createSequentialGroup()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(scroll, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		
+		
+		lblBuscar = new JLabel("Buscar por:");
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Nombre", "\u00C1lbum", "Artista", "A\u00F1o", "G\u00E9nero", "N\u00FAmero"}));
+		
+		textAreaBuscar = new JTextArea();
+		
+		btnIrMostrarResultado = new JButton("Mostrar resultado");
+		btnIrMostrarResultado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		GroupLayout gl_panel = new GroupLayout(panel);
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblBuscar)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textAreaBuscar, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+					.addGap(12)
+					.addComponent(btnIrMostrarResultado)
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblBuscar)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(textAreaBuscar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnIrMostrarResultado))
+					.addContainerGap(50, Short.MAX_VALUE))
+		);
+		panel.setLayout(gl_panel);
+		panelSuperior.setLayout(gl_panelSuperior);
+
+		
 		frame.getContentPane().setLayout(groupLayout);
 	}
+	
+	//Geters
 	
 	public JFrame getFrame(){
 		return frame;
 	}
 	
-	public JList getJList(){
-		return list;
+	public JCheckBoxMenuItem getAbrir(){
+		return abrir;
 	}
 	
 	public JCheckBoxMenuItem getSalir(){
 		return salir;
+	}
+	
+	public JTable getTabla(){
+		return this.tabla;
+	}
+	
+	public JPanel getPanelSuperior(){
+		return panelSuperior;
+	}
+	
+	public JFileChooser getFile(){
+		return file;
+	}
+	
+	public JButton getBtnIrIr(){
+		return btnIrMostrarResultado;
+	}
+	
+	public JTextArea getTextAreaBuscar(){
+		return textAreaBuscar;
+	}
+	
+	public JComboBox getComboBox(){
+		return comboBox;
 	}
 }

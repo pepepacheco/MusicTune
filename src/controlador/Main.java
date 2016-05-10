@@ -1,10 +1,6 @@
 package controlador;
 
-import modelo.exceptions.InvalidTackNumberException;
-import modelo.exceptions.InvalidYearException;
-import modelo.exceptions.InvalidDurationException;
 import vista.Vista;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -16,7 +12,6 @@ public class Main {
     public static void main(String args[]) {
 
             try {
-                Service.loadJson();
                 java.awt.EventQueue.invokeLater(() -> {
                     new Vista().getFrame().setVisible(true);
                 });
@@ -32,8 +27,7 @@ public class Main {
                         break;
                     }
                 }
-            } catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException |
-            ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }
