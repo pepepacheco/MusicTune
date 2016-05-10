@@ -1,8 +1,9 @@
 package controlador;
 
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +39,9 @@ public class Controlador {
 		        	File archivo = vista.getFile().getSelectedFile();
 		        	Service.loadJson(archivo);
 		        }
-		        
-
+		       
 				vista.getTabla().setModel(new Tabla(PlayList.getListaReproduccion(), 7));
-				String[] cabecera = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
-				for (int i = 0; i < cabecera.length; i++) {
-					vista.getTabla().getTableHeader().getColumnModel().getColumn(i).setHeaderValue(cabecera[i]);
-				}
-				vista.getTabla().getTableHeader().setBackground(Color.GRAY);;
+				setCabezera();
 
 			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException  e) {
 				//e.printStackTrace();
@@ -58,6 +54,25 @@ public class Controlador {
 		
 		vista.getBtnIrIr().addActionListener(r->{
 			buscarPorCategoria();
+		});
+		
+		vista.getTabla().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int numero = vista.getTabla().getSelectedRow();
+				String[] campos = new String[7];
+				for (int i = 0; i < 7; i++) {
+					campos[i] = (String) vista.getTabla().getModel().getValueAt(numero, i);
+				}
+				vista.getTextAreaNombre().setText(campos[0]);
+				vista.getTextAreaAlbum().setText(campos[1]);
+				vista.getTextAreaArtista().setText(campos[2]);
+				vista.getTextAreaAnio().setText(campos[3]);
+				vista.getTextAreaGenero().setText(campos[4]);
+				vista.getTextAreaDuracion().setText(campos[5]);
+				vista.getTextAreaNumero().setText(campos[6]);
+				
+			}
 		});
 	}
 	
@@ -115,6 +130,15 @@ public class Controlador {
 				break;
 		}
 		vista.getTabla().setModel(new Tabla(lista, 7));
+		setCabezera();
+	}
+	
+	private void setCabezera(){
+		String[] cabecera = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
+		for (int i = 0; i < cabecera.length; i++) {
+			vista.getTabla().getTableHeader().getColumnModel().getColumn(i).setHeaderValue(cabecera[i]);
+		}
+		vista.getTabla().getTableHeader().setBackground(Color.GRAY);;
 	}
 	
 }

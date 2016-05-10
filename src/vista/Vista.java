@@ -1,35 +1,19 @@
 package vista;
 
 import javax.swing.JFrame;
-
 import controlador.Controlador;
-import modelo.PlayList;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
-import java.util.List;
-import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
-import java.awt.Font;
 import java.awt.Color;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
@@ -37,15 +21,18 @@ import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JSeparator;
+import javax.swing.JMenuItem;
 
 public class Vista {
 	private JFrame frame;
 	private JMenuBar barraMenu;
 	private JMenu menuArchivo;
 	private JMenu editar;
-	private JCheckBoxMenuItem abrir;
-	private JCheckBoxMenuItem salir;
-	private JPanel panelSuperior;
+	private JMenuItem abrir;
+	private JMenuItem salir;
+	private JPanel panelHead;
+	private JPanel panelBody;
 	private JScrollPane scroll;
 	private JTable tabla;
 	private JFileChooser file;
@@ -53,8 +40,23 @@ public class Vista {
 	private JTextArea textAreaBuscar;
 	private JButton btnIrMostrarResultado;
 	private GroupLayout groupLayout;
-	private GroupLayout gl_panelSuperior;
+	private GroupLayout gl_panelBody;
+	private GroupLayout gl_panelHead;
 	private JComboBox comboBox;
+	private JLabel lblNombre;
+	private JLabel lblAlbum;
+	private JTextArea textAreaNombre;
+	private JTextArea textAreaAlbum;
+	private JLabel lblArtista;
+	private JTextArea textAreaArtista;
+	private JLabel lblAo;
+	private JTextArea textAreaAnio;
+	private JLabel lblGnero;
+	private JTextArea textAreaGenero;
+	private JLabel lblDuracin;
+	private JTextArea textAreaDuracion;
+	private JTextArea textAreaNumero;
+	private JLabel lblNumero;
 
 	
 	public Vista(){
@@ -66,7 +68,7 @@ public class Vista {
 	
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 768, 517);
+		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -75,30 +77,33 @@ public class Vista {
 		menuArchivo = new JMenu("Archivo");
 		barraMenu.add(menuArchivo);
 		
-		abrir = new JCheckBoxMenuItem("Abrir");
+		abrir = new JMenuItem("Abrir");
+		abrir.setIcon(null);
+		abrir.setSelectedIcon(null);
 		menuArchivo.add(abrir);
 		
-		salir = new JCheckBoxMenuItem("Salir");
+		salir = new JMenuItem("Salir");
 		menuArchivo.add(salir);
 		
 		editar = new JMenu("Editar");
 		barraMenu.add(editar);
 		
-		panelSuperior = new JPanel();
+		panelBody = new JPanel();
 		groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelSuperior, GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
+				.addComponent(panelBody, GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addGap(11)
-					.addComponent(panelSuperior, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
-					.addGap(93))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(panelBody, GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 
 		tabla = new JTable();
+
 		tabla.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -109,29 +114,118 @@ public class Vista {
 		tabla.setBackground(Color.WHITE);
 		tabla.setColumnSelectionAllowed(true);
 		tabla.setCellSelectionEnabled(true);
-		panelSuperior.add(tabla);
+		panelBody.add(tabla);
 		scroll = new JScrollPane(tabla);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		JPanel panel = new JPanel();
-		gl_panelSuperior = new GroupLayout(panelSuperior);
-		gl_panelSuperior.setHorizontalGroup(
-			gl_panelSuperior.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelSuperior.createSequentialGroup()
+		panelHead = new JPanel();
+		
+		JSeparator separator = new JSeparator();
+		
+		lblNombre = new JLabel("Nombre");
+		
+		lblAlbum = new JLabel("\u00C1lbum");
+		
+		textAreaNombre = new JTextArea();
+		
+		textAreaAlbum = new JTextArea();
+		
+		lblArtista = new JLabel("Artista");
+		
+		textAreaArtista = new JTextArea();
+		
+		lblAo = new JLabel("A\u00F1o");
+		
+		textAreaAnio = new JTextArea();
+		
+		lblGnero = new JLabel("G\u00E9nero");
+		
+		textAreaGenero = new JTextArea();
+		
+		lblDuracin = new JLabel("Duraci\u00F3n");
+		
+		textAreaDuracion = new JTextArea();
+		
+		textAreaNumero = new JTextArea();
+		
+		lblNumero = new JLabel("Numero");
+		gl_panelBody = new GroupLayout(panelBody);
+		gl_panelBody.setHorizontalGroup(
+			gl_panelBody.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panelBody.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panelSuperior.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
-						.addComponent(scroll, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
+					.addGroup(gl_panelBody.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scroll, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+						.addComponent(panelHead, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_panelBody.createSequentialGroup()
+							.addComponent(separator, GroupLayout.PREFERRED_SIZE, 1, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_panelBody.createSequentialGroup()
+									.addGroup(gl_panelBody.createParallelGroup(Alignment.TRAILING)
+										.addComponent(lblNombre)
+										.addGroup(gl_panelBody.createParallelGroup(Alignment.TRAILING)
+											.addComponent(lblGnero)
+											.addComponent(lblDuracin)
+											.addComponent(lblAo)
+											.addComponent(lblArtista)
+											.addComponent(lblAlbum)))
+									.addGap(18)
+									.addGroup(gl_panelBody.createParallelGroup(Alignment.LEADING)
+										.addComponent(textAreaArtista, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+										.addComponent(textAreaAlbum, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+										.addComponent(textAreaNombre, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+										.addComponent(textAreaAnio, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+										.addComponent(textAreaGenero, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)
+										.addComponent(textAreaDuracion, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)))
+								.addGroup(gl_panelBody.createSequentialGroup()
+									.addGap(4)
+									.addComponent(lblNumero)
+									.addGap(19)
+									.addComponent(textAreaNumero, GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE)))))
 					.addContainerGap())
 		);
-		gl_panelSuperior.setVerticalGroup(
-			gl_panelSuperior.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, gl_panelSuperior.createSequentialGroup()
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+		gl_panelBody.setVerticalGroup(
+			gl_panelBody.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelBody.createSequentialGroup()
+					.addComponent(panelHead, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scroll, GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
-					.addContainerGap())
+					.addComponent(scroll, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+					.addGap(18)
+					.addGroup(gl_panelBody.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panelBody.createSequentialGroup()
+							.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(225))
+						.addGroup(gl_panelBody.createSequentialGroup()
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNombre))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaAlbum, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblAlbum))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaArtista, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblArtista))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaAnio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblAo))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaGenero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblGnero))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblDuracin)
+								.addComponent(textAreaDuracion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panelBody.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textAreaNumero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblNumero))
+							.addContainerGap())))
 		);
 		
 		
@@ -147,33 +241,33 @@ public class Vista {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addContainerGap()
+		
+		gl_panelHead = new GroupLayout(panelHead);
+		gl_panelHead.setHorizontalGroup(
+			gl_panelHead.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelHead.createSequentialGroup()
+					.addGap(4)
 					.addComponent(lblBuscar)
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textAreaBuscar, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
-					.addGap(12)
-					.addComponent(btnIrMostrarResultado)
-					.addContainerGap())
+					.addComponent(textAreaBuscar, GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnIrMostrarResultado))
 		);
-		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
+		gl_panelHead.setVerticalGroup(
+			gl_panelHead.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelHead.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblBuscar)
+					.addGroup(gl_panelHead.createParallelGroup(Alignment.BASELINE)
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(textAreaBuscar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnIrMostrarResultado))
-					.addContainerGap(50, Short.MAX_VALUE))
+						.addComponent(btnIrMostrarResultado)
+						.addComponent(lblBuscar))
+					.addContainerGap(15, Short.MAX_VALUE))
 		);
-		panel.setLayout(gl_panel);
-		panelSuperior.setLayout(gl_panelSuperior);
+		panelHead.setLayout(gl_panelHead);
+		panelBody.setLayout(gl_panelBody);
 
 		
 		frame.getContentPane().setLayout(groupLayout);
@@ -181,15 +275,47 @@ public class Vista {
 	
 	//Geters
 	
+	public JTextArea getTextAreaNombre() {
+		return textAreaNombre;
+	}
+
+	public JTextArea getTextAreaAlbum() {
+		return textAreaAlbum;
+	}
+
+	public JTextArea getTextAreaArtista() {
+		return textAreaArtista;
+	}
+
+	public JTextArea getTextAreaAnio() {
+		return textAreaAnio;
+	}
+
+	public JTextArea getTextAreaGenero() {
+		return textAreaGenero;
+	}
+
+	public JTextArea getTextAreaDuracion() {
+		return textAreaDuracion;
+	}
+
+	public JTextArea getTextAreaNumero() {
+		return textAreaNumero;
+	}
+
+	public void setTextAreaBuscar(JTextArea textAreaBuscar) {
+		this.textAreaBuscar = textAreaBuscar;
+	}
+
 	public JFrame getFrame(){
 		return frame;
 	}
 	
-	public JCheckBoxMenuItem getAbrir(){
+	public JMenuItem getAbrir(){
 		return abrir;
 	}
 	
-	public JCheckBoxMenuItem getSalir(){
+	public JMenuItem getSalir(){
 		return salir;
 	}
 	
@@ -198,7 +324,7 @@ public class Vista {
 	}
 	
 	public JPanel getPanelSuperior(){
-		return panelSuperior;
+		return panelBody;
 	}
 	
 	public JFileChooser getFile(){
