@@ -40,8 +40,9 @@ public class Controlador {
 		        	Service.loadJson(archivo);
 		        }
 		       
-				vista.getTabla().setModel(new Tabla(PlayList.getListaReproduccion(), 7));
+				vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), 7));
 				setCabezera();
+				//vista.getTabla().setMo
 
 			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException  e) {
 				//e.printStackTrace();
@@ -86,7 +87,7 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return c.getNombreCancion().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 			case "\u00C1lbum":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
@@ -94,7 +95,7 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return c.getNombreAlbum().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 			case "Artista":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
@@ -102,7 +103,7 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return c.getNombreArtista().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 			case "A\u00F1o":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
@@ -110,7 +111,7 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return (c.getAnio()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 			case "G\u00E9nero":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
@@ -118,7 +119,7 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return c.getGenero().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 			case "N\u00FAmero":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
@@ -126,10 +127,10 @@ public class Controlador {
 					Cancion c = (Cancion) p;
 					return (c.getNumeroCancion()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
-				vista.getTabla().setModel(new Tabla(lista, 7));
+				vista.getTabla().setModel(new MiTableModel(lista, 7));
 				break;
 		}
-		vista.getTabla().setModel(new Tabla(lista, 7));
+		vista.getTabla().setModel(new MiTableModel(lista, 7));
 		setCabezera();
 	}
 	

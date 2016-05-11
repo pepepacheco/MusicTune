@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 /**
  * @author Rafael Vargas Del Moral
+ * @version 1.0
  */
 public final class Cancion extends Album {
     private String nombreCancion;

@@ -17,6 +17,15 @@ import java.io.IOException;
  */
 
 public class Service {
+	/**
+	 * Método que lee nuestro fichero JSON y crea los objetos.
+	 * @param file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws InvalidYearException
+	 * @throws InvalidDurationException
+	 * @throws InvalidTackNumberException
+	 */
     public static void loadJson(File file) throws FileNotFoundException, IOException, InvalidYearException,
     InvalidDurationException, InvalidTackNumberException{
         JsonReader reader = new JsonReader(new FileReader(file));
