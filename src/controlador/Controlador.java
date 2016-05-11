@@ -32,7 +32,7 @@ public class Controlador {
 		eventos();
 	}
 	
-	//M�todo donde se van a manejar todos los eventos.
+	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
 		vista.getAbrir().addActionListener(r->{			
 			try {
@@ -84,7 +84,7 @@ public class Controlador {
 		});
 	}
 	
-	//M�todo que modifica el JTable seg�n un critero de b�squeda.
+	//Método que modifica el JTable según un critero de búsqueda.
 	private  void buscarPorCategoria(){
 		lista = new ArrayList<PlayList>();
 		
@@ -136,7 +136,7 @@ public class Controlador {
 		setCabezera();
 	}
 	
-	//Modificaci�n de la cabecera por defecto del JTable.
+	//Modificación de la cabecera por defecto del JTable.
 	private void setCabezera(){
 		String[] cabecera = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
 		for (int i = 0; i < cabecera.length; i++) {

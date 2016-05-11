@@ -95,7 +95,7 @@ public final class Cancion extends Album {
     }
 
     /**
-     * @return true si la canci�n es anadida con exito
+     * @return true si la canción es anadida con exito
      */
     @Override
     public boolean addCancion() {
@@ -104,8 +104,8 @@ public final class Cancion extends Album {
 
     @Override
     public String toString() {
-        return "Nombre: "+nombreCancion+" Album: "+getNombreAlbum()+" Artista: "+getNombreArtista()
-                +" A�o: "+getAnio()+" Genero: "+genero+" Duracion: "+(duracion/1000)+
+        return "Nombre: "+nombreCancion+" Álbum: "+getNombreAlbum()+" Artista: "+getNombreArtista()
+                +" Año: "+getAnio()+" Género: "+genero+" Duración: "+(duracion/1000)+
                 "seg. Numero en Disco: "+numeroCancion+"\n";                
     }
 /*  

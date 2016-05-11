@@ -20,7 +20,7 @@ public final class Service {
 	private static JsonReader reader;
 
 	/**
-	 * Método que lee nuestro fichero JSON y crea los objetos.
+	 * MÃ©todo que lee nuestro fichero JSON y crea los objetos.
 	 * @param file
 	 * @throws FileNotFoundException
 	 * @throws IOException
@@ -51,7 +51,7 @@ public final class Service {
             if (reader.nextName().equals("Track Number"))
                 campo[6] = reader.nextString();
             
-            //Compruebo que no haya campos nulos en el json
+            //Compruebo que no haya campos nulos en el JSON.
             for (String string : campo) {
                 if (string != null)
                     comprobacion = true;

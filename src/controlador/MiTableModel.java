@@ -13,10 +13,10 @@ import modelo.PlayList;
 
 class MiTableModel extends AbstractTableModel {
 
-	private int columnas; //variable que va a definir el numero de columnas en funcion del nº de atrib.
+	private int columnas; //variable que va a definir el numero de columnas en funcion del nÂº de atrib.
 	private String[][] table; //Array Bidimensional que va a contener los datos del JTable.
-	List<String> campos; //Lista dinámica que va a recoger los datos para posteriormente
-	//añadirlos a la matriz.
+	List<String> campos; //Lista dinï¿½mica que va a recoger los datos para posteriormente
+	//aÃ±adirlos a la matriz.
 	
 	//Constructor que inicializa los atributos.
 	public MiTableModel(List<PlayList> lista, int nAtributos) {  		  
@@ -53,7 +53,7 @@ class MiTableModel extends AbstractTableModel {
 							break;									
 					}
 					table[i][j] = campos.get(j);
-					//vacio la lista en el ultimo paso del bucle anidado¡
+					//vacio la lista en el ultimo paso del bucle anidado.
 					if (j == nAtributos-1)
 						campos.clear();
 				}
@@ -61,14 +61,14 @@ class MiTableModel extends AbstractTableModel {
 		}
 	}
 	/**
-	 * return int número de columnas.
+	 * return int nÃºmero de columnas.
 	 */
 	@Override
 	public int getColumnCount() {
 		return columnas;
 	}
 	/**
-	 * return int número de filas.
+	 * return int nÃºmero de filas.
 	 */
 	@Override
 	public int getRowCount() {
