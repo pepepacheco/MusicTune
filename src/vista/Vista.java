@@ -23,6 +23,8 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSeparator;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
+import java.awt.BorderLayout;
+import javax.swing.SwingConstants;
 
 
 public class Vista {
@@ -40,7 +42,6 @@ public class Vista {
 	private JLabel lblBuscar;
 	private JTextField textAreaBuscar;
 	private JButton btnIrMostrarResultado;
-	private GroupLayout groupLayout;
 	private GroupLayout gl_panelBody;
 	private GroupLayout gl_panelHead;
 	private JComboBox<String> comboBox;
@@ -64,6 +65,9 @@ public class Vista {
 	private JPanel JPanelInferior;
 	private GroupLayout gl_JPanelInferior;
 	private Controlador controlador;
+	private JPanel footer;
+	private JLabel lblRegistro;
+	private GroupLayout gl_footer;
 
 	
 	public Vista(){
@@ -75,7 +79,7 @@ public class Vista {
 	
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 800, 600);
+		frame.setBounds(100, 100, 800, 594);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -152,6 +156,7 @@ public class Vista {
 							public void actionPerformed(ActionEvent arg0) {
 							}
 						});
+						frame.getContentPane().setLayout(new BorderLayout(0, 0));
 						
 						gl_panelHead = new GroupLayout(panelHead);
 						gl_panelHead.setHorizontalGroup(
@@ -224,6 +229,8 @@ public class Vista {
 		textAreaAlbum = new JTextField();
 		
 		textAreaNombre = new JTextField();
+		
+		footer = new JPanel();
 		
 		lblNombre = new JLabel("Nombre");
 		gl_JPanelInferior = new GroupLayout(JPanelInferior);
@@ -322,18 +329,26 @@ public class Vista {
 					.addContainerGap())
 		);
 		JPanelInferior.setLayout(gl_JPanelInferior);
-		groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(splitPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 784, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
-		);
-
+		frame.getContentPane().add(splitPane);
+		frame.getContentPane().add(footer, BorderLayout.SOUTH);
 		
-		frame.getContentPane().setLayout(groupLayout);
+		lblRegistro = new JLabel("Registro 0 de 0");
+		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
+		GroupLayout gl_footer = new GroupLayout(footer);
+		gl_footer.setHorizontalGroup(
+			gl_footer.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, gl_footer.createSequentialGroup()
+					.addContainerGap(701, Short.MAX_VALUE)
+					.addComponent(lblRegistro)
+					.addContainerGap())
+		);
+		gl_footer.setVerticalGroup(
+			gl_footer.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_footer.createSequentialGroup()
+					.addComponent(lblRegistro)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
+		footer.setLayout(gl_footer);
 	}
 	
 	//Getters
@@ -404,6 +419,10 @@ public class Vista {
 	
 	public JComboBox<String> getComboBox(){
 		return comboBox;
+	}
+	
+	public JLabel getLblRegistro(){
+		return lblRegistro;
 	}
 
 }

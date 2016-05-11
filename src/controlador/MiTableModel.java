@@ -53,10 +53,8 @@ class MiTableModel extends AbstractTableModel {
 							break;									
 					}
 					table[i][j] = campos.get(j);
-					//vacio la lista en el ultimo paso del bucle anidado.
-					if (j == nAtributos-1)
-						campos.clear();
 				}
+				campos.clear();
 			}
 		}
 	}
