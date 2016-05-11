@@ -12,46 +12,66 @@ import modelo.PlayList;
  */
 
 class MiTableModel extends AbstractTableModel {
-	  private String[][] table; //Array Bidimensional que va a contener los datos del JTable.
-	  List<String> campos; //Lista dinámica que va a recoger los datos para posteriormente
-	  //añadirlos a la matriz.
-	  
-	  //Constructor que inicializa los atributos.
-	  public MiTableModel(List<PlayList> lista, int nAtributos) {  		  
-		  table = new String[lista.size()][lista.size()*nAtributos];
-		  campos = new ArrayList<String>();
-			
-		  for (int i = 0; i < lista.size(); i++) {
-			  if (lista.get(i) instanceof Cancion ){
-				  Cancion c = (Cancion) lista.get(i);	
+
+	private int columnas; //variable que va a definir el numero de columnas en funcion del nº de atrib.
+	private String[][] table; //Array Bidimensional que va a contener los datos del JTable.
+	List<String> campos; //Lista dinámica que va a recoger los datos para posteriormente
+	//añadirlos a la matriz.
+	
+	//Constructor que inicializa los atributos.
+	public MiTableModel(List<PlayList> lista, int nAtributos) {  		  
+		table = new String[lista.size()][lista.size()*nAtributos];
+		campos = new ArrayList<String>();
+		columnas = nAtributos;
+
+		for (int i = 0; i < lista.size(); i++) {
+			if (lista.get(i) instanceof Cancion ){
+				Cancion c = (Cancion) lista.get(i);	
 					
-				  for (int j = 0; j < nAtributos; j++) {
-					  campos.add(c.getNombreCancion()); campos.add(c.getNombreAlbum()); campos.add(c.getNombreArtista());
-					  campos.add(c.getAnio()+""); campos.add(c.getGenero()); campos.add(c.getDuracion()/100+" Seg");
-					  campos.add(c.getNumeroCancion()+"");
-					  table[i][j] = campos.get(j);
-						
-					  //inicializao la lista a vacío excepto en el último paso de bucle
-					  //para posteriormente usar su tamaño.
-					  if (j != campos.size()-1)
-						  campos = new ArrayList<String>();
-				  }
-			  }
-		  }
-	  }
+				for (int j = 0; j < nAtributos; j++) {
+					switch (j){
+						case 0:
+							campos.add(c.getNombreCancion());
+							break;
+						case 1:
+							campos.add(c.getNombreAlbum());
+							break;
+						case 2:
+							campos.add(c.getNombreArtista());
+							break;
+						case 3:
+							campos.add(c.getAnio()+"");
+							break;
+						case 4:
+							campos.add(c.getGenero());
+							break;
+						case 5:
+							campos.add(c.getDuracion()/100+" Seg");
+							break;							
+						case 6:
+							campos.add(c.getNumeroCancion()+"");
+							break;									
+					}
+					table[i][j] = campos.get(j);
+					//vacio la lista en el ultimo paso del bucle anidado¡
+					if (j == nAtributos-1)
+						campos.clear();
+				}
+			}
+		}
+	}
 	/**
 	 * return int número de columnas.
 	 */
 	@Override
 	public int getColumnCount() {
-		return campos.size();
+		return columnas;
 	}
 	/**
 	 * return int número de filas.
 	 */
 	@Override
 	public int getRowCount() {
-		System.out.println(table.length);
 		return table.length;
 	}
 	/**

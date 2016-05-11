@@ -4,7 +4,7 @@ import modelo.Cancion;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.InvalidDurationException;
-import modelo.PlayList;
+//import modelo.PlayList;
 import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,7 +16,9 @@ import java.io.IOException;
  * @version 1.0
  */
 
-public class Service {
+public final class Service {
+	private static JsonReader reader;
+
 	/**
 	 * Método que lee nuestro fichero JSON y crea los objetos.
 	 * @param file
@@ -28,7 +30,7 @@ public class Service {
 	 */
     public static void loadJson(File file) throws FileNotFoundException, IOException, InvalidYearException,
     InvalidDurationException, InvalidTackNumberException{
-        JsonReader reader = new JsonReader(new FileReader(file));
+        reader = new JsonReader(new FileReader(file));
         reader.beginArray();
         String[] campo = new String[7];
         boolean comprobacion = false;
@@ -48,6 +50,8 @@ public class Service {
                 campo[5] = reader.nextString()+"";            
             if (reader.nextName().equals("Track Number"))
                 campo[6] = reader.nextString();
+            
+            //Compruebo que no haya campos nulos en el json
             for (String string : campo) {
                 if (string != null)
                     comprobacion = true;

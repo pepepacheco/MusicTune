@@ -3,10 +3,10 @@ package modelo;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.InvalidDurationException;
-import java.io.File;
+//import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 /**
  * @author Rafael Vargas Del Moral

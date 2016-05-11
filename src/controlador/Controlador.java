@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import modelo.Cancion;
 import modelo.PlayList;
 import modelo.exceptions.InvalidDurationException;
@@ -24,13 +26,14 @@ public class Controlador {
 	private Vista vista;
 	private List<PlayList> lista;
 	
+	//Pasamos una referencia de la vista para acceder a sus Clases.
 	public Controlador(Vista v){
 		vista = v;
 		eventos();
 	}
 	
-	public void eventos(){
-
+	//MÔøΩtodo donde se van a manejar todos los eventos.
+	private void eventos(){
 		vista.getAbrir().addActionListener(r->{			
 			try {
 		        int returnVal = vista.getFile().showOpenDialog(vista.getFrame());
@@ -42,19 +45,23 @@ public class Controlador {
 		       
 				vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), 7));
 				setCabezera();
-				//vista.getTabla().setMo
 
 			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException  e) {
 				//e.printStackTrace();
+				JOptionPane.showMessageDialog(vista.getFrame(), "Error de lectura de archivo");
+			} catch (IllegalStateException i){
+				JOptionPane.showMessageDialog(vista.getFrame(), "JSON incorrecto");
 			}
+			 
 		});
 
 		vista.getSalir().addActionListener(r->{
 			System.exit(0);
 		});
 		
-		vista.getBtnIrIr().addActionListener(r->{
-			buscarPorCategoria();
+		vista.getBtnMostrarResultado().addActionListener(r->{
+			if (PlayList.getListaReproduccion().size() > 0)
+				buscarPorCategoria();
 		});
 		
 		vista.getTabla().addMouseListener(new MouseAdapter() {
@@ -77,13 +84,13 @@ public class Controlador {
 		});
 	}
 	
+	//MÔøΩtodo que modifica el JTable segÔøΩn un critero de bÔøΩsqueda.
 	private  void buscarPorCategoria(){
-		List lista = new ArrayList();
+		lista = new ArrayList<PlayList>();
 		
 		switch (vista.getComboBox().getSelectedItem().toString()){
 			case "Nombre":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return c.getNombreCancion().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -91,7 +98,6 @@ public class Controlador {
 				break;
 			case "\u00C1lbum":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return c.getNombreAlbum().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -99,7 +105,6 @@ public class Controlador {
 				break;
 			case "Artista":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return c.getNombreArtista().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -107,7 +112,6 @@ public class Controlador {
 				break;
 			case "A\u00F1o":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return (c.getAnio()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -115,7 +119,6 @@ public class Controlador {
 				break;
 			case "G\u00E9nero":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return c.getGenero().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -123,7 +126,6 @@ public class Controlador {
 				break;
 			case "N\u00FAmero":
 				lista = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					List<PlayList> resultado = new ArrayList<PlayList>();
 					Cancion c = (Cancion) p;
 					return (c.getNumeroCancion()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
@@ -134,8 +136,9 @@ public class Controlador {
 		setCabezera();
 	}
 	
+	//ModificaciÔøΩn de la cabecera por defecto del JTable.
 	private void setCabezera(){
-		String[] cabecera = {"Nombre","¡lbum","Artista","AÒo","GÈnero","DuraciÛn", "N˙mero"};
+		String[] cabecera = {"Nombre","√Ålbum","Artista","A√±o","G√©nero","Duraci√≥n", "N√∫mero"};
 		for (int i = 0; i < cabecera.length; i++) {
 			vista.getTabla().getTableHeader().getColumnModel().getColumn(i).setHeaderValue(cabecera[i]);
 		}
