@@ -16,17 +16,18 @@ public class Main {
                     new Vista().getFrame().setVisible(true);
                 });
                 for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                    if ("GTK+".equals(info.getName())) {
+                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                        break;
+                    }
+                }                
+                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                     if ("Windows".equals(info.getName())) {
                         javax.swing.UIManager.setLookAndFeel(info.getClassName());
                         break;
                     }
                 }
-                for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                    if ("GTK+".equals(info.getName())) {
-                        javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                        break;
-                    }
-                }
+
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } 
