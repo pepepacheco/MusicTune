@@ -37,7 +37,33 @@ public abstract class Album extends Artista {
     public int getAnio() {
         return anio;
     }
+    
 
-    @Override
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((nombreAlbum == null) ? 0 : nombreAlbum.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Album other = (Album) obj;
+		if (nombreAlbum == null) {
+			if (other.nombreAlbum != null)
+				return false;
+		} else if (!nombreAlbum.equals(other.nombreAlbum))
+			return false;
+		return true;
+	}
+
+	@Override
     public abstract boolean addCancion();    
 }

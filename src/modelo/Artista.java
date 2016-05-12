@@ -25,6 +25,33 @@ public abstract class Artista extends PlayList {
         return "Artista: "+nombreArtista;
     }
 
-    @Override
+	@Override
     public abstract boolean addCancion();
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nombreArtista == null) ? 0 : nombreArtista.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Artista other = (Artista) obj;
+		if (nombreArtista == null) {
+			if (other.nombreArtista != null)
+				return false;
+		} else if (!nombreArtista.equals(other.nombreArtista))
+			return false;
+		return true;
+	}
+	
+	
 }

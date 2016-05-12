@@ -108,6 +108,35 @@ public final class Cancion extends Album {
                 +" Año: "+getAnio()+" Género: "+genero+" Duración: "+(duracion/1000)+
                 "seg. Numero en Disco: "+numeroCancion+"\n";                
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((nombreCancion == null) ? 0 : nombreCancion.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cancion other = (Cancion) obj;
+		if (nombreCancion == null) {
+			if (other.nombreCancion != null)
+				return false;
+		} else if (!nombreCancion.equals(other.nombreCancion))
+			return false;
+		return true;
+	}
+    
+    
+
+    
 /*  
     //Main Testeo   
     public static void main(String[] args) {

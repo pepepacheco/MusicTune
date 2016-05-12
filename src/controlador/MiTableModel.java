@@ -13,22 +13,21 @@ import modelo.PlayList;
 
 class MiTableModel extends AbstractTableModel {
 
-	private int columnas; //variable que va a definir el numero de columnas en funcion del nº de atrib.
+	private String[] cabezera; //cabezera de la tabla
 	private String[][] table; //Array Bidimensional que va a contener los datos del JTable.
-	List<String> campos; //Lista din�mica que va a recoger los datos para posteriormente
+	List<String> campos; //Lista dinámica que va a recoger los datos para posteriormente
 	//añadirlos a la matriz.
 	
 	//Constructor que inicializa los atributos.
-	public MiTableModel(List<PlayList> lista, int nAtributos) {  		  
-		table = new String[lista.size()][lista.size()*nAtributos];
+	public MiTableModel(List<PlayList> lista, String[] cabezera) {  		  
+		table = new String[lista.size()][lista.size()*cabezera.length];
 		campos = new ArrayList<String>();
-		columnas = nAtributos;
-
+		this.cabezera = cabezera;
 		for (int i = 0; i < lista.size(); i++) {
 			if (lista.get(i) instanceof Cancion ){
 				Cancion c = (Cancion) lista.get(i);	
 					
-				for (int j = 0; j < nAtributos; j++) {
+				for (int j = 0; j < cabezera.length; j++) {
 					switch (j){
 						case 0:
 							campos.add(c.getNombreCancion());
@@ -46,7 +45,7 @@ class MiTableModel extends AbstractTableModel {
 							campos.add(c.getGenero());
 							break;
 						case 5:
-							campos.add(c.getDuracion()/100+" Seg");
+							campos.add(c.getDuracion()+" ms");
 							break;							
 						case 6:
 							campos.add(c.getNumeroCancion()+"");
@@ -63,7 +62,7 @@ class MiTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public int getColumnCount() {
-		return columnas;
+		return cabezera.length;
 	}
 	/**
 	 * return int número de filas.
@@ -78,5 +77,11 @@ class MiTableModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		return table[rowIndex][columnIndex];
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		// TODO Auto-generated method stub
+		return cabezera[column];
 	}
 }

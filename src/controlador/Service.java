@@ -18,7 +18,6 @@ import java.io.IOException;
 
 public final class Service {
 	private static JsonReader reader;
-
 	/**
 	 * Método que lee nuestro fichero JSON y crea los objetos.
 	 * @param file
