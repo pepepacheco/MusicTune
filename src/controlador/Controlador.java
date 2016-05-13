@@ -11,7 +11,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
+import modelo.Album;
+import modelo.Artista;
 import modelo.Cancion;
+import modelo.ConexionBD;
+import modelo.CrearTablas;
 import modelo.PlayList;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
@@ -45,7 +50,15 @@ public class Controlador {
 		        	File archivo = vista.getFile().getSelectedFile();
 		        	Service.loadJson(archivo);
 		        }
-		       
+		        try {
+		        	CrearTablas.crearTabla(ConexionBD.getConexion());
+					Cancion.addCancionBD();
+					Album.addAlbumBD();
+					Artista.addArtistaBD();			
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), CABEZERA));
 
 			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
@@ -192,25 +205,26 @@ public class Controlador {
 		});
 	}
 	private void borrarCancion(List<PlayList> lista) {
-		Cancion cancionEliminar = null;
-		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea eliminar "
-		+((Cancion)lista.get(vista.getTabla().getSelectedRow())).getNombreCancion()+" ?", "Aviso", JOptionPane.YES_NO_OPTION);
-		
-		if (result == JOptionPane.YES_OPTION){
-			cancionEliminar =(Cancion) lista.get(vista.getTabla().getSelectedRow());
-			lista.remove(cancionEliminar);
-			vista.getTabla().setModel(new MiTableModel(lista, CABEZERA));
-		}
-		
-		//Vamos a comprobar si la canción borrada es resultado de una búsqueda, en ese caso la eliminaremos tambíen de la lista general		
-		if (cancionEliminar != null){
-			for (PlayList playList : PlayList.getListaReproduccion()) {
-				if (cancionEliminar.equals(((Cancion)playList))){
-					PlayList.getListaReproduccion().remove(playList);
-					break;
-				}
-				
+		if (vista.getTabla().getSelectedRow() != -1){
+			Cancion cancionEliminar = null;
+			int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea eliminar "
+			+((Cancion)lista.get(vista.getTabla().getSelectedRow())).getNombreCancion()+" ?", "Aviso", JOptionPane.YES_NO_OPTION);
+			
+			if (result == JOptionPane.YES_OPTION){
+				cancionEliminar =(Cancion) lista.get(vista.getTabla().getSelectedRow());
+				lista.remove(cancionEliminar);
+				vista.getTabla().setModel(new MiTableModel(lista, CABEZERA));
 			}
+			
+			//Vamos a comprobar si la canción borrada es resultado de una búsqueda, en ese caso la eliminaremos tambíen de la lista general		
+			if (cancionEliminar != null){
+				for (PlayList playList : PlayList.getListaReproduccion()) {
+					if (cancionEliminar.equals(((Cancion)playList))){
+						PlayList.getListaReproduccion().remove(playList);
+						break;
+					}
+				}
+			}			
 		}
 	}
 	//Método que modifica el JTable según un critero de búsqueda.

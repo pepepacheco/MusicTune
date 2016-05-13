@@ -4,6 +4,10 @@ import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 //import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -140,19 +144,18 @@ public final class Cancion extends Album {
 		return true;
 	}
 	
-	public static void addCancionBD(){
-		String sentencia = "";
-		//INSERT INTO CANCION VALUES (null, Nombre, Género, Duración, Número)		
-		
+	public static void addCancionBD() throws SQLException{
+		Statement sentencia = ConexionBD.getConexion().createStatement(); 
+		String insertCancion = "";
+		//INSERT INTO cancion VALUES (null, Nombre, Género, Duración, Número)				
 		for (PlayList cancion : PlayList.getListaReproduccion()) {			
-			sentencia = "INSERT INTO CANCION VALUES ("
-					+ "null,'"+((Cancion) cancion).getNombreCancion()+"',"
-					+ "'"+((Cancion) cancion).getGenero()+"','"+
-					((Cancion) cancion).getDuracion()+"', '"+
-					((Cancion) cancion).getNombreCancion()+"')";	
-		}	
-		System.out.println(sentencia);
-		
+			insertCancion = "INSERT INTO cancion VALUES ("
+					+ "null, \""+((Cancion) cancion).getNombreCancion()+"\", "
+					+ "\""+((Cancion) cancion).getGenero()+"\", "+
+					((Cancion) cancion).getDuracion()+", "+
+					((Cancion) cancion).getNumeroCancion()+")";	
+			sentencia.executeUpdate(insertCancion);
+		}			
 	}
     
 /*  

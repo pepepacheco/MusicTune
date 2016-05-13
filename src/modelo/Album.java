@@ -1,5 +1,8 @@
 package modelo;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import modelo.exceptions.InvalidYearException;
 
 /**
@@ -66,4 +69,17 @@ public abstract class Album extends Artista {
 
 	@Override
     public abstract boolean addCancion();    
+	
+	public static void addAlbumBD() throws SQLException{
+		Statement sentencia = ConexionBD.getConexion().createStatement(); 
+		String insertAlbum = "";
+		//INSERT INTO album VALUES (null, nombreAlbum, año, null)				
+		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+			insertAlbum = "INSERT INTO album VALUES ("
+					+ "null,\""+((Album) cancion).getNombreAlbum()+"\","
+					+ ((Album) cancion).getAnio()+","
+					+ " null);";
+			sentencia.executeUpdate(insertAlbum);
+		}			
+	}
 }

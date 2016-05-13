@@ -41,10 +41,6 @@ public class ConexionBD {
 		return conexion;
 	}
 	
-	public static void main(String[] args) {
-		Connection conexion =  ConexionBD.getConexion();
-	}
-	
 	static class  MiShoutdownHuk extends Thread{
 		@Override
 		public void run() {

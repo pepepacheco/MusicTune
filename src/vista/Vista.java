@@ -164,10 +164,7 @@ public class Vista {
 						textAreaBuscar = new JTextField();
 						
 						btnIrMostrarResultado = new JButton("Mostrar resultado");
-						btnIrMostrarResultado.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent arg0) {
-							}
-						});
+
 						frame.getContentPane().setLayout(new BorderLayout(0, 0));
 						
 						gl_panelHead = new GroupLayout(panelHead);

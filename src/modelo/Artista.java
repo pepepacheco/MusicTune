@@ -1,5 +1,8 @@
 package modelo;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * @author Rafel Vargas del Moral
  */
@@ -53,5 +56,15 @@ public abstract class Artista extends PlayList {
 		return true;
 	}
 	
-	
+	public static void addArtistaBD() throws SQLException{
+		Statement sentencia = ConexionBD.getConexion().createStatement(); 
+		String insertArtista = "";
+		//INSERT INTO artista VALUES (null, nombreArtista, null, null)				
+		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+			insertArtista = "INSERT INTO artista VALUES ("
+					+ "null,\""+((Artista) cancion).getNombreArtista()+"\","
+					+ " null, null);";
+			sentencia.executeUpdate(insertArtista);
+		}			
+	}
 }
