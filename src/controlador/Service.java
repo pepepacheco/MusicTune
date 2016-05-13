@@ -3,6 +3,7 @@ package controlador;
 import modelo.Cancion;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
+import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
 //import modelo.PlayList;
 import com.google.gson.stream.JsonReader;
@@ -29,7 +30,7 @@ public final class Service {
 	 * @throws InvalidTackNumberException
 	 */
     public static void loadJson(File file) throws FileNotFoundException, IOException, InvalidYearException,
-    InvalidDurationException, InvalidTackNumberException{
+    InvalidDurationException, InvalidTackNumberException, EmptyFieldsException{
         reader = new JsonReader(new FileReader(file));
         reader.beginArray();
         String[] campo = new String[7];

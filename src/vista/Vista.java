@@ -85,7 +85,7 @@ public class Vista {
 		controlador = new Controlador(this); 
 
 	}
-	
+
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
 		frame.setBounds(100, 100, 950, 700);
@@ -357,13 +357,16 @@ public class Vista {
 		gl_footer = new GroupLayout(footer);
 		gl_footer.setHorizontalGroup(
 			gl_footer.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_footer.createSequentialGroup()
-					.addContainerGap(793, Short.MAX_VALUE)
-					.addComponent(lblRegistro, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE))
+				.addGroup(Alignment.TRAILING, gl_footer.createSequentialGroup()
+					.addContainerGap(784, Short.MAX_VALUE)
+					.addComponent(lblRegistro, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
 		gl_footer.setVerticalGroup(
 			gl_footer.createParallelGroup(Alignment.LEADING)
-				.addComponent(lblRegistro, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+				.addGroup(gl_footer.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblRegistro, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
 		);
 		footer.setLayout(gl_footer);
 		frame.setMinimumSize(new Dimension(950, 700));
@@ -457,6 +460,10 @@ public class Vista {
 
 	public JButton getBtnAnadirCampo() {
 		return btnAnadirCampo;
+	}
+	
+	public JButton getBtnLimpiarFormulario() {
+		return btnLimpiarFormulario;
 	}
 	
 	

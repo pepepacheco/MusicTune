@@ -2,6 +2,7 @@ package modelo;
 
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
+import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
 //import java.io.File;
 import java.util.ArrayList;
@@ -29,10 +30,11 @@ public final class Cancion extends Album {
      * @throws Modelo.InvalidYearException
      * @throws Modelo.InvaliddurationException
      * @throws Modelo.InvalidTackNumberException
+     * @throws EmptyFieldsException 
      */
     public Cancion(String nombre, String album, String artista, String anio, String genero, String duracion, String numero) 
-    throws InvalidYearException, InvalidDurationException, InvalidTackNumberException {
-        
+    throws InvalidYearException, InvalidDurationException, InvalidTackNumberException, EmptyFieldsException {
+    	
         super(album, anio, artista);
         this.nombreCancion = nombre;
         this.genero = genero;
@@ -46,6 +48,10 @@ public final class Cancion extends Album {
             this.numeroCancion = Integer.parseInt(numero);
         else
             throw new InvalidTackNumberException();
+        
+        if (!(nombre.length() > 0 && album.length() > 0 && artista.length() > 0 && genero.length() > 0)){
+        	throw new EmptyFieldsException();
+        }
         
         addCancion();
         
@@ -145,7 +151,8 @@ public final class Cancion extends Album {
 					((Cancion) cancion).getDuracion()+"', '"+
 					((Cancion) cancion).getNombreCancion()+"')";	
 		}	
-	
+		System.out.println(sentencia);
+		
 	}
     
 /*  
