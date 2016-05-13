@@ -50,15 +50,15 @@ public class Controlador {
 		        	File archivo = vista.getFile().getSelectedFile();
 		        	Service.loadJson(archivo);
 		        }
-		        try {
+/*		        try {
 		        	CrearTablas.crearTabla(ConexionBD.getConexion());
 					Cancion.addCancionBD();
 					Album.addAlbumBD();
 					Artista.addArtistaBD();			
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
+*/				
 				vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), CABEZERA));
 
 			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
@@ -97,38 +97,33 @@ public class Controlador {
 			
 			String artistaActual="";
 			String artistaElegido = vista.getTextAreaArtista().getText();
-			Image image = null;
+
 			if (!artistaElegido.equals(artistaActual)){
 				artistaActual = artistaElegido;
-		        try {
-		        	URL url = null;
-		        	switch (vista.getTextAreaArtista().getText()){
-		        		case "Nirvana":
-		        			url = new URL("https://yt3.ggpht.com/-rWzHbL2Maq8/AAAAAAAAAAI/AAAAAAAAAAA/wIkuF8fiHeY/s100-c-k-no-rj-c0xffffff/photo.jpg");
-		        			break;
-		        		case "Pink Floyd":
-			        		url = new URL("https://yt3.ggpht.com/-rWzHbL2Maq8/AAAAAAAAAAI/AAAAAAAAAAA/wIkuF8fiHeY/s100-c-k-no-rj-c0xffffff/photo.jpg");
-			        		break;
-		        		case "Dire Straits":
-		        			url = new URL("http://a4.mzstatic.com/us/r30/Music/v4/c6/55/6d/c6556dd3-e25d-62d4-19ae-204c78185b96/cover100x100.jpeg");
-		        			break;
-		        		case "AC/DC":
-		        			url = new URL("http://a3.mzstatic.com/us/r30/Music4/v4/07/4d/8b/074d8b60-3b27-4527-1243-cf12e0d3759b/cover100x100.jpeg");
-		        			break;
-		        		case "Queen":
-		        			url = new URL("http://a1.mzstatic.com/us/r30/Music/v4/db/67/b2/db67b24d-daff-e2ba-d08f-d97227c80abb/cover100x100.jpeg");
-		        			break;
-		        		case "Muse":
-		        			url = new URL("http://coolchaser-static.coolchaser.com/images/themes/t/-i293.photobucket.com-albums-mm51-gabster806-Muse-180px-Muse_logo.png");
-		        			break;
-		        		default:
-		        			url = new URL("https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Imagen_no_disponible.svg/100px-Imagen_no_disponible.svg.png");	
-		        	}		            
-		            image = ImageIO.read(url);
-		        } catch (IOException e) {
-		        	//e.printStackTrace();
-		        }
-		        vista.getJLabelImagen().setIcon(new ImageIcon(image));
+		        String url;
+				switch (vista.getTextAreaArtista().getText()){
+					case "Nirvana":
+						url = "resources/nirvana.jpg";
+						break;
+					case "Pink Floyd":
+						url = "resources/pink_floyd.jpg";
+						break;
+					case "Dire Straits":
+						url = "resources/dire_straits.jpeg";
+						break;
+					case "AC/DC":
+						url = "resources/ac_dc.jpeg";
+						break;
+					case "Queen":
+						url = "resources/queen.jpg";
+						break;
+					case "Muse":
+						url = "resources/muse.jpg";
+						break;
+					default:
+						url = "resources/no_image.jpg";	
+				}
+				vista.getJLabelImagen().setIcon(new ImageIcon(url));
 			}
 			
 			if (!busquedaRealidada)

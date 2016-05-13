@@ -32,6 +32,5 @@ public class Main {
     	} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
     		Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
     	}
-
     }
 }

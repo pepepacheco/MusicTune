@@ -28,6 +28,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
+import javax.swing.BoxLayout;
+import java.awt.GridLayout;
+import java.awt.CardLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import net.miginfocom.swing.MigLayout;
 
 public class Vista {
 	private JFrame frame;
@@ -88,7 +95,7 @@ public class Vista {
 
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 950, 700);
+		frame.setBounds(100, 100, 1020, 750);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -214,7 +221,7 @@ public class Vista {
 		splitPane.setRightComponent(JPanelInferior);
 		
 		footer = new JPanel();
-		JPanelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		JPanelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
 		
 		jLabelImagen = new JLabel("");
 		jLabelImagen.setToolTipText("sdagfdsa");
@@ -366,7 +373,7 @@ public class Vista {
 					.addComponent(lblRegistro, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
 		);
 		footer.setLayout(gl_footer);
-		frame.setMinimumSize(new Dimension(950, 700));
+		frame.setMinimumSize(new Dimension(980, 710));
 	}
 	
 	//Getters
