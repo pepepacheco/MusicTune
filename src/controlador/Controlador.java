@@ -38,7 +38,7 @@ public class Controlador {
 	
 	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
-		vista.getAbrir().addActionListener(r->{			
+		vista.getAbrir().addActionListener(r->{
 			try {
 		        if (vista.getFile().showOpenDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
 		        	File archivo = vista.getFile().getSelectedFile();

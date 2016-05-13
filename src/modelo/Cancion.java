@@ -133,9 +133,20 @@ public final class Cancion extends Album {
 			return false;
 		return true;
 	}
-    
-    
-
+	
+	public static void addCancionBD(){
+		String sentencia = "";
+		//INSERT INTO CANCION VALUES (null, Nombre, Género, Duración, Número)		
+		
+		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+			sentencia = "INSERT INTO CANCION VALUES ("
+					+ "null,'"+((Cancion) cancion).getNombreCancion()+"',"
+					+ "'"+((Cancion) cancion).getGenero()+"','"+
+					((Cancion) cancion).getDuracion()+"', '"+
+					((Cancion) cancion).getNombreCancion()+"')";	
+		}	
+	
+	}
     
 /*  
     //Main Testeo   

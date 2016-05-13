@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javax.swing.JOptionPane;
+import org.sqlite.SQLiteConfig;
 import vista.Vista;
 
 public class ConexionBD {
@@ -24,9 +25,13 @@ public class ConexionBD {
 			try {
 				//Conectamos con la base de datos
 				Class.forName(DRIVER);
-				//trabajamos con un fichero de propiedades
-				//Cargamos la base de datos
-				conexion = DriverManager.getConnection(URL);
+				
+				//establecemos una configuración
+				SQLiteConfig conf = new SQLiteConfig();
+				conf.enforceForeignKeys(true);				
+				
+				//Cargamos la base de datos a través de un fichero de configuración
+				conexion = DriverManager.getConnection(URL, conf.toProperties());
 				
 			} catch (ClassNotFoundException | SQLException e) {
 				JOptionPane.showMessageDialog(vista.getFrame(), "Error de Conexión a la base de datos");
@@ -36,17 +41,22 @@ public class ConexionBD {
 		return conexion;
 	}
 	
+	public static void main(String[] args) {
+		Connection conexion =  ConexionBD.getConexion();
+	}
+	
 	static class  MiShoutdownHuk extends Thread{
 		@Override
 		public void run() {
-			Connection con = ConexionBD.getConexion();
-			if (con != null)
+			if (conexion != null)
 				try {
-					con.close();
+					conexion.close();
 				} catch (SQLException e) {
 					JOptionPane.showMessageDialog(vista.getFrame(), "Error inesperado");
 					//e.printStackTrace();
 				}
 		}
 	}
+	
+
 }
