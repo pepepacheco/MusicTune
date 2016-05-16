@@ -3,7 +3,6 @@ package vista;
 import javax.swing.JFrame;
 import controlador.Controlador;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -17,8 +16,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JMenuItem;
@@ -27,22 +24,9 @@ import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Font;
-import javax.swing.BoxLayout;
-import java.awt.GridLayout;
-import java.awt.CardLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import net.miginfocom.swing.MigLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.ListSelectionModel;
 
 public class Vista {
@@ -94,6 +78,7 @@ public class Vista {
 	private GroupLayout gl_panel_1;
 	private JButton btnLimpiarFormulario;
 	private FileFilter filtro;
+	private JMenuItem mntmExportarPdf;
 	
 	public Vista(){
 		inicialize();
@@ -118,6 +103,9 @@ public class Vista {
 		abrir.setSelectedIcon(null);
 		menuArchivo.add(abrir);
 		
+		mntmExportarPdf = new JMenuItem("Exportar PDF");
+		menuArchivo.add(mntmExportarPdf);
+		
 		salir = new JMenuItem("Salir");
 		menuArchivo.add(salir);
 		
@@ -134,7 +122,6 @@ public class Vista {
 		
 				tabla = new JTable();
 				tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				tabla.setFont(new Font("Tahoma", Font.PLAIN, 11));
 				tabla.setModel(new DefaultTableModel(
 					new Object[][] {
 					},
@@ -357,7 +344,6 @@ public class Vista {
 		frame.getContentPane().add(footer, BorderLayout.SOUTH);
 		
 		lblRegistro = new JLabel("Registro 0 de 0");
-		lblRegistro.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
 		gl_footer = new GroupLayout(footer);
 		gl_footer.setHorizontalGroup(
@@ -474,5 +460,10 @@ public class Vista {
 	public FileFilter getFiltro() {
 		return filtro;
 	}
+
+	public JMenuItem getMntmExportarPdf() {
+		return mntmExportarPdf;
+	}
+	
 
 }

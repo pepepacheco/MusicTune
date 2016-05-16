@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="C:/Users/varga/Dropbox/Desarrollo de aplicaciones multiplataforma/PROG/sqlite-jdbc-3.8.11.2.jar"/>
 	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/varga/Dropbox/Desarrollo de aplicaciones multiplataforma/PROG/itextpdf-5.5.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

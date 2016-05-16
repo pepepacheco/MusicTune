@@ -77,10 +77,6 @@ public final class Cancion {
     public String getNombreCancion() {
         return nombreCancion;
     }
-    
-    public String getAlbum() {
-    	return nombreAlbum;
-    }
      
     public String getNombreAlbum() {
 		return nombreAlbum;

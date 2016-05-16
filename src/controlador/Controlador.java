@@ -3,6 +3,8 @@ package controlador;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +12,12 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import modelo.Album;
 import modelo.Artista;
 import modelo.Cancion;
@@ -47,8 +55,7 @@ public class Controlador {
 	    	vista.getFile().setFileFilter(vista.getFiltro());	       	
 	        if (vista.getFile().showOpenDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
 				try {
-					File archivo = vista.getFile().getSelectedFile();
-		        	Service.loadJson(archivo);		        	
+		        	Service.loadJson(vista.getFile().getSelectedFile());		        	
 		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
 		        	CrearTablas.crearTabla(ConexionBD.getConexion());
 					Cancion.addCancionBD();
@@ -174,7 +181,8 @@ public class Controlador {
 			vista.getTextAreaAnio().setText("");
 			vista.getTextAreaDuracion().setText("");
 			vista.getTextAreaNumero().setText("");
-		});	
+		});
+
 		
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
 			//Primero comprobamos que el registro anterior no coincida con ninguno de la lista
@@ -197,6 +205,37 @@ public class Controlador {
 			} catch (Exception e) {
 				//e.printStackTrace();
 			}	
+		});
+		
+		vista.getMntmExportarPdf().addActionListener(r->{
+			
+			Document documento = new Document();	
+			try {
+				if (vista.getFile().showSaveDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
+					PdfWriter.getInstance(documento, new FileOutputStream(vista.getFile().getSelectedFile()));				
+					documento.open();
+					PdfPTable tabla = new PdfPTable(7);
+					tabla.setWidthPercentage(100);
+					tabla.setHeaderRows(1);
+					for (String campo : CABEZERA) {
+						tabla.addCell(campo);
+					}					
+					for (Cancion cancion : PlayList.getListaCanciones()) {
+						tabla.addCell(new Phrase(cancion.getNombreCancion(), FontFactory.getFont(FontFactory.HELVETICA, 6)));
+						tabla.addCell(new Phrase(cancion.getNombreAlbum(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+						tabla.addCell(new Phrase(cancion.getNombreArtista(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+						tabla.addCell(new Phrase(cancion.getYearAlbum()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						tabla.addCell(new Phrase(cancion.getGenero(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+						tabla.addCell(new Phrase(cancion.getDuracion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						tabla.addCell(new Phrase(cancion.getNumeroCancion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+					}					
+				documento.add(tabla);
+				documento.close();
+				}
+			} catch (FileNotFoundException | DocumentException e) {
+				JOptionPane.showMessageDialog(vista.getFrame(), "No ha sido posible exportar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
+				//e.printStackTrace();
+			} 
 		});
 	}
 	
