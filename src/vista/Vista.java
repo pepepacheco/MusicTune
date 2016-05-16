@@ -3,6 +3,7 @@ package vista;
 import javax.swing.JFrame;
 import controlador.Controlador;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -24,6 +25,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.table.DefaultTableModel;
@@ -35,6 +39,11 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import net.miginfocom.swing.MigLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.ListSelectionModel;
 
 public class Vista {
 	private JFrame frame;
@@ -49,7 +58,7 @@ public class Vista {
 	private JTable tabla;
 	private JFileChooser file;
 	private JLabel lblBuscar;
-	private JTextField textAreaBuscar;
+	private JTextField textFieldBuscar;
 	private JButton btnIrMostrarResultado;
 	private GroupLayout gl_panelBody;
 	private GroupLayout gl_panelHead;
@@ -84,18 +93,18 @@ public class Vista {
 	private JButton btnAnadirCampo;
 	private GroupLayout gl_panel_1;
 	private JButton btnLimpiarFormulario;
-
+	private FileFilter filtro;
 	
 	public Vista(){
 		inicialize();
 		file = new JFileChooser();
+    	filtro = new FileNameExtensionFilter("JSON file", "json", "JSON");
 		controlador = new Controlador(this); 
-
 	}
 
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 1020, 750);
+		frame.setBounds(100, 100, 1050, 750);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -121,10 +130,10 @@ public class Vista {
 		
 		JPanelSuperior = new JPanel();
 		splitPane.setLeftComponent(JPanelSuperior);
-		
 		panelBody = new JPanel();
 		
 				tabla = new JTable();
+				tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				tabla.setFont(new Font("Tahoma", Font.PLAIN, 11));
 				tabla.setModel(new DefaultTableModel(
 					new Object[][] {
@@ -133,7 +142,6 @@ public class Vista {
 						"Selecciona un archivo JSON"
 					}
 				));
-
 						tabla.setBackground(Color.WHITE);
 						//tabla.setColumnSelectionAllowed(true);
 						//tabla.setCellSelectionEnabled(false);
@@ -163,17 +171,12 @@ public class Vista {
 						);
 						
 						
-						lblBuscar = new JLabel("Buscar por:");
-						
+						lblBuscar = new JLabel("Buscar por:");						
 						comboBox = new JComboBox<String>();
-						comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Nombre", "\u00C1lbum", "Artista", "A\u00F1o", "G\u00E9nero", "N\u00FAmero"}));
-						
-						textAreaBuscar = new JTextField();
-						
+						comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Nombre", "\u00C1lbum", "Artista", "A\u00F1o", "G\u00E9nero", "N\u00FAmero"}));					
+						textFieldBuscar = new JTextField();						
 						btnIrMostrarResultado = new JButton("Mostrar resultado");
-
-						frame.getContentPane().setLayout(new BorderLayout(0, 0));
-						
+						frame.getContentPane().setLayout(new BorderLayout(0, 0));						
 						gl_panelHead = new GroupLayout(panelHead);
 						gl_panelHead.setHorizontalGroup(
 							gl_panelHead.createParallelGroup(Alignment.LEADING)
@@ -183,7 +186,7 @@ public class Vista {
 									.addPreferredGap(ComponentPlacement.UNRELATED)
 									.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(textAreaBuscar, GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+									.addComponent(textFieldBuscar, GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(btnIrMostrarResultado))
 						);
@@ -193,7 +196,7 @@ public class Vista {
 									.addContainerGap()
 									.addGroup(gl_panelHead.createParallelGroup(Alignment.BASELINE)
 										.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addComponent(textAreaBuscar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+										.addComponent(textFieldBuscar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 										.addComponent(btnIrMostrarResultado)
 										.addComponent(lblBuscar))
 									.addContainerGap(15, Short.MAX_VALUE))
@@ -270,45 +273,43 @@ public class Vista {
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(0)
+					.addContainerGap()
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_panel_1.createSequentialGroup()
+								.addGap(29)
+								.addComponent(lblAnio))
+							.addComponent(lblDuracion))
+						.addComponent(lblGenero)
+						.addComponent(lblNumero)
+						.addComponent(lblArtista)
+						.addComponent(lblAlbum)
+						.addComponent(lblNombre))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-								.addComponent(lblNombre)
-								.addComponent(lblAlbum)
-								.addComponent(lblArtista)
-								.addComponent(lblAnio)
-								.addComponent(lblDuracion)
-								.addComponent(lblNumero))
+							.addComponent(btnAnterior)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_panel_1.createSequentialGroup()
-									.addComponent(btnAnterior)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(btnSiguiente)
-									.addPreferredGap(ComponentPlacement.RELATED, 281, Short.MAX_VALUE)
-									.addComponent(btnLimpiarFormulario)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(btnAnadirCampo)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(btnBorrarCampo))
-								.addComponent(textAreaAnio, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
-								.addComponent(textAreaDuracion, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
-								.addComponent(textAreaAlbum, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
-								.addComponent(textAreaArtista, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
-								.addComponent(textAreaNombre, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
-								.addComponent(textAreaNumero, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)))
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(7)
-							.addComponent(lblGenero)
+							.addComponent(btnSiguiente)
+							.addPreferredGap(ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
+							.addComponent(btnLimpiarFormulario)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textAreaGenero, GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)))
+							.addComponent(btnAnadirCampo)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnBorrarCampo))
+						.addComponent(textAreaNumero, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaDuracion, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaAlbum, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaArtista, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaGenero, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaAnio, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaNombre, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_1.createSequentialGroup()
-					.addGap(41)
+					.addGap(35)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(textAreaNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblNombre))
@@ -322,33 +323,33 @@ public class Vista {
 						.addComponent(lblArtista))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textAreaAnio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblAnio))
+						.addComponent(lblAnio)
+						.addComponent(textAreaAnio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textAreaGenero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblGenero))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textAreaDuracion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblDuracion))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textAreaNumero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNumero))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnBorrarCampo)
+								.addComponent(btnAnadirCampo)
+								.addComponent(btnLimpiarFormulario))
+							.addContainerGap())
 						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGap(62)
 							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textAreaNumero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblNumero)))
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textAreaGenero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblGenero))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textAreaDuracion, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblDuracion))))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-							.addComponent(btnAnterior, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(btnSiguiente, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-							.addComponent(btnBorrarCampo)
-							.addComponent(btnAnadirCampo)
-							.addComponent(btnLimpiarFormulario)))
-					.addContainerGap())
+								.addComponent(btnAnterior, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnSiguiente, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addContainerGap())))
 		);
 		panel_1.setLayout(gl_panel_1);
 		JPanelInferior.add(panel_1);
@@ -360,9 +361,9 @@ public class Vista {
 		lblRegistro.setHorizontalAlignment(SwingConstants.CENTER);
 		gl_footer = new GroupLayout(footer);
 		gl_footer.setHorizontalGroup(
-			gl_footer.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_footer.createSequentialGroup()
-					.addContainerGap(784, Short.MAX_VALUE)
+			gl_footer.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_footer.createSequentialGroup()
+					.addContainerGap(888, Short.MAX_VALUE)
 					.addComponent(lblRegistro, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
@@ -373,7 +374,7 @@ public class Vista {
 					.addComponent(lblRegistro, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
 		);
 		footer.setLayout(gl_footer);
-		frame.setMinimumSize(new Dimension(980, 710));
+		frame.setMinimumSize(new Dimension(1050, 500));
 	}
 	
 	//Getters
@@ -435,7 +436,7 @@ public class Vista {
 	}
 	
 	public JTextField getTextAreaBuscar(){
-		return textAreaBuscar;
+		return textFieldBuscar;
 	}
 	
 	public JComboBox<String> getComboBox(){
@@ -469,6 +470,9 @@ public class Vista {
 	public JButton getBtnLimpiarFormulario() {
 		return btnLimpiarFormulario;
 	}
-	
-	
+
+	public FileFilter getFiltro() {
+		return filtro;
+	}
+
 }

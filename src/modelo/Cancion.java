@@ -13,12 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 //import java.util.Scanner;
 
+import javax.swing.JProgressBar;
+
 /**
  * @author Rafael Vargas Del Moral
  * @version 1.0
  */
-public final class Cancion extends Album {
+public final class Cancion {
     private String nombreCancion;
+    private String nombreAlbum;
+    private String nombreArtista;
+    private int yearAlbum;
     private String genero; 
     private int duracion;
     private int numeroCancion;
@@ -32,15 +37,23 @@ public final class Cancion extends Album {
      * @param duracion
      * @param numero
      * @throws Modelo.InvalidYearException
+     * @throws InvalidDurationException 
      * @throws Modelo.InvaliddurationException
      * @throws Modelo.InvalidTackNumberException
      * @throws EmptyFieldsException 
      */
-    public Cancion(String nombre, String album, String artista, String anio, String genero, String duracion, String numero) 
+    public Cancion(String nombre, String album, String artista, String year, String genero, String duracion, String numero)
     throws InvalidYearException, InvalidDurationException, InvalidTackNumberException, EmptyFieldsException {
     	
-        super(album, anio, artista);
         this.nombreCancion = nombre;
+        this.nombreAlbum = album;
+        this.nombreArtista = artista;
+        
+        if (year.matches("[0-9]+"))
+        	this.yearAlbum = Integer.parseInt(year);
+        else
+        	throw new InvalidYearException();
+        
         this.genero = genero;
         
         if (duracion.matches("[0-9]+"))
@@ -58,35 +71,43 @@ public final class Cancion extends Album {
         }
         
         addCancion();
-        
     }
 
-    /**
-     * @return nombreCancion
-     */
+    //geters
     public String getNombreCancion() {
         return nombreCancion;
     }
+    
+    public String getAlbum() {
+    	return nombreAlbum;
+    }
+     
+    public String getNombreAlbum() {
+		return nombreAlbum;
+	}
 
-    /**
-     * @return genero
-     */
+	public String getNombreArtista() {
+		return nombreArtista;
+	}
+
+	public int getYearAlbum() {
+		return yearAlbum;
+	}
+
     public String getGenero() {
         return genero;
     }
 
-    /**
-     * @return duracion
-     */
     public int getDuracion() {
         return duracion;
     }
 
-    /**
-     * @return numeroCancion
-     */
     public int getNumeroCancion() {
         return numeroCancion;  
+    }
+    
+    private boolean addCancion() {
+    	return PlayList.getListaCanciones().add(this);
     }
     
     /**
@@ -94,10 +115,9 @@ public final class Cancion extends Album {
      * @param b interfaz funcional para implementar critero de busqueda
      * @return
      */
-    public static List<PlayList> BuscarCancion(List<PlayList> c, Buscar b){
-        List<PlayList> cancionesEncontradas = new ArrayList<PlayList>();
-        for (PlayList playList : c) {
-            Cancion cancion = (Cancion) playList;
+    public static List<Cancion> BuscarCancion(List<Cancion> listaCanciones, Buscar b){
+        List<Cancion> cancionesEncontradas = new ArrayList<Cancion>();
+        for (Cancion cancion : listaCanciones) {
             if (b.criterio(cancion))
                 cancionesEncontradas.add(cancion);
         }
@@ -107,22 +127,20 @@ public final class Cancion extends Album {
     /**
      * @return true si la canción es anadida con exito
      */
-    @Override
-    public boolean addCancion() {
-        return getListaReproduccion().add(this);
-    }
 
     @Override
     public String toString() {
         return "Nombre: "+nombreCancion+" Álbum: "+getNombreAlbum()+" Artista: "+getNombreArtista()
-                +" Año: "+getAnio()+" Género: "+genero+" Duración: "+(duracion/1000)+
+                +" Año: "+yearAlbum+" Género: "+genero+" Duración: "+(duracion/1000)+
                 "seg. Numero en Disco: "+numeroCancion+"\n";                
     }
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
+		result = prime * result + ((nombreAlbum == null) ? 0 : nombreAlbum.hashCode());
+		result = prime * result + ((nombreArtista == null) ? 0 : nombreArtista.hashCode());
 		result = prime * result + ((nombreCancion == null) ? 0 : nombreCancion.hashCode());
 		return result;
 	}
@@ -131,11 +149,21 @@ public final class Cancion extends Album {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Cancion other = (Cancion) obj;
+		if (nombreAlbum == null) {
+			if (other.nombreAlbum != null)
+				return false;
+		} else if (!nombreAlbum.equals(other.nombreAlbum))
+			return false;
+		if (nombreArtista == null) {
+			if (other.nombreArtista != null)
+				return false;
+		} else if (!nombreArtista.equals(other.nombreArtista))
+			return false;
 		if (nombreCancion == null) {
 			if (other.nombreCancion != null)
 				return false;
@@ -145,19 +173,23 @@ public final class Cancion extends Album {
 	}
 	
 	public static void addCancionBD() throws SQLException{
+
 		Statement sentencia = ConexionBD.getConexion().createStatement(); 
 		String insertCancion = "";
+		
 		//INSERT INTO cancion VALUES (null, Nombre, Género, Duración, Número)				
-		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+		for (Cancion cancion : PlayList.getListaCanciones()) {
+			
 			insertCancion = "INSERT INTO cancion VALUES ("
-					+ "null, \""+((Cancion) cancion).getNombreCancion()+"\", "
-					+ "\""+((Cancion) cancion).getGenero()+"\", "+
-					((Cancion) cancion).getDuracion()+", "+
-					((Cancion) cancion).getNumeroCancion()+")";	
+					+ "null, \""+cancion.getNombreCancion()+"\", "
+					+ "\""+cancion.getGenero()+"\", "+
+					cancion.getDuracion()+", "+
+					cancion.getNumeroCancion()+")";	
+			
 			sentencia.executeUpdate(insertCancion);
 		}			
 	}
-    
+   
 /*  
     //Main Testeo   
     public static void main(String[] args) {

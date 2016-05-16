@@ -1,22 +1,31 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
  * @author Rafael Vargas del Moral
  */
-public abstract class PlayList {
-    //Atributo de clase que va a almacenar todas las canciones de la PlayList
-    private static List<PlayList> listaReproduccion = new ArrayList<PlayList>();
+public final class PlayList {
+
+    private static List<Cancion> listaCanciones = new ArrayList<Cancion>();
+    private static Set<Album> listaAlbumes = new HashSet<Album>();
+    private static Set<Artista> listaArtistas = new HashSet<Artista>();
     
-    /**
-     * @return listaReproduccion 
-     */
-    public static List<PlayList> getListaReproduccion() {
-        return listaReproduccion;
+
+    public  static List<Cancion> getListaCanciones() {
+        return listaCanciones;
     }
     
-    public abstract boolean addCancion();
+    public  static Set<Album> getListaAlbumes() {
+        return listaAlbumes;
+    }
+    
+    public  static Set<Artista> getListaArtistas() {
+        return listaArtistas;
+    }
+   
 }

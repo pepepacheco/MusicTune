@@ -1,17 +1,15 @@
 package controlador;
 
-import java.awt.Image;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
 import modelo.Album;
 import modelo.Artista;
 import modelo.Cancion;
@@ -31,7 +29,7 @@ import vista.Vista;
 
 public class Controlador {
 	private Vista vista;
-	private List<PlayList> listaResultado;
+	private List<Cancion> listaResultado;
 	private int numeroRegistro;
 	private boolean busquedaRealidada = false;
 	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
@@ -44,37 +42,49 @@ public class Controlador {
 	
 	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
+		
 		vista.getAbrir().addActionListener(r->{
-			try {
-		        if (vista.getFile().showOpenDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
-		        	File archivo = vista.getFile().getSelectedFile();
-		        	Service.loadJson(archivo);
-		        }
-/*		        try {
+	    	vista.getFile().setFileFilter(vista.getFiltro());	       	
+	        if (vista.getFile().showOpenDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
+				try {
+					File archivo = vista.getFile().getSelectedFile();
+		        	Service.loadJson(archivo);		        	
+		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
 		        	CrearTablas.crearTabla(ConexionBD.getConexion());
 					Cancion.addCancionBD();
 					Album.addAlbumBD();
 					Artista.addArtistaBD();			
-				} catch (Exception e) {
+					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+	
+				} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
 					//e.printStackTrace();
+					JOptionPane.showMessageDialog(vista.getFrame(), "Archivo de datos incorrecto", "Error de lectura", JOptionPane.ERROR_MESSAGE);
+				} catch (IllegalStateException i){
+					JOptionPane.showMessageDialog(vista.getFrame(), "Seleccione un archivo válido", "JSON Incorecto", JOptionPane.INFORMATION_MESSAGE);
+				} catch (SQLException s){
+					JOptionPane.showMessageDialog(vista.getFrame(), "No se ha podido conectar a la base de datos", "Error", JOptionPane.INFORMATION_MESSAGE);
 				}
-*/				
-				vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), CABEZERA));
-
-			} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
-				//e.printStackTrace();
-				JOptionPane.showMessageDialog(vista.getFrame(), "Archivo de datos incorrecto", "Error de lectura", JOptionPane.ERROR_MESSAGE);
-			} catch (IllegalStateException i){
-				JOptionPane.showMessageDialog(vista.getFrame(), "Seleccione un archivo válido", "JSON Incorecto", JOptionPane.INFORMATION_MESSAGE);
-			}			 
+				 
+	        }
 		});
 
 		vista.getSalir().addActionListener(r->{
 			System.exit(0);
 		});
+
+		
+		vista.getTextAreaBuscar().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
+					if (PlayList.getListaCanciones().size() > 0)
+						buscarPorCategoria();
+				}
+			}
+		});
 		
 		vista.getBtnMostrarResultado().addActionListener(r->{
-			if (PlayList.getListaReproduccion().size() > 0)
+			if (PlayList.getListaCanciones().size() > 0)
 				buscarPorCategoria();
 		});
 		
@@ -127,66 +137,33 @@ public class Controlador {
 			}
 			
 			if (!busquedaRealidada)
-				vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+PlayList.getListaReproduccion().size());
+				vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+PlayList.getListaCanciones().size());
 			else
 				vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+listaResultado.size());
 		});
 		
-		vista.getBtnSiguiente().addActionListener(r->{		
+		vista.getBtnSiguiente().addActionListener(r->{			
 			if (vista.getTabla().getSelectedRow() < (vista.getTabla().getRowCount()-1))
 				vista.getTabla().setRowSelectionInterval(vista.getTabla().getSelectedRow()+1, vista.getTabla().getSelectedRow()+1);
+			
 		});
 		
-		vista.getBtnAnterior().addActionListener(r->{
+		vista.getBtnAnterior().addActionListener(r->{			
 			if (vista.getTabla().getSelectedRow() > 0)
 				vista.getTabla().setRowSelectionInterval(vista.getTabla().getSelectedRow()-1, vista.getTabla().getSelectedRow()-1);
 		});
 		
 		vista.getBtnAnadirCampo().addActionListener(r->{
-			Cancion cancion = null;
-			try {
-				cancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
-						vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
-			} catch (InvalidYearException y) {
-				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un año válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
-				//e.printStackTrace();
-			} catch (InvalidDurationException d) {
-				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca una duración válida", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
-				//e.printStackTrace();
-			} catch (InvalidTackNumberException t) {
-				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un número de canción válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
-				//e.printStackTrace();
-			} catch (EmptyFieldsException e) {
-				JOptionPane.showMessageDialog(vista.getFrame(), "No puede haber campos vacíos", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
-				//e.printStackTrace();
-			}
-			boolean repetida = false;
-			//Comprobamos si la canción está repetida
-			if (cancion != null){
-				for (int i = 0; i < PlayList.getListaReproduccion().size()-1; i++) {
-					if (PlayList.getListaReproduccion().get(i) instanceof Cancion ){
-						if (PlayList.getListaReproduccion().get(i).equals(cancion)){
-							PlayList.getListaReproduccion().remove(PlayList.getListaReproduccion().size()-1);
-							repetida = true;
-							JOptionPane.showMessageDialog(vista.getFrame(), "Esta canción ya existe", "Alerta", JOptionPane.WARNING_MESSAGE);
-							break;
-						};
-					}
-				}
-				// Si no está repetida, añadiremos la canción a la lista
-				if (!repetida){
-					vista.getTabla().setModel(new MiTableModel(PlayList.getListaReproduccion(), CABEZERA));
-					JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "Canción guardada correctamente", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}
+			addCancion();
 		});
 		
 		vista.getBtnBorrarCampo().addActionListener(r->{
 			//Compruebo si el campo a borrar es resultado de una búsqueda o del listado global
-			if (listaResultado != null && listaResultado.size() > 0)
+			if (listaResultado != null && listaResultado.size() > 0){
 				borrarCancion(listaResultado);
+			}		
 			else
-				borrarCancion(PlayList.getListaReproduccion());
+				borrarCancion(PlayList.getListaCanciones());
 		});
 		
 		vista.getBtnLimpiarFormulario().addActionListener(r->{
@@ -197,13 +174,89 @@ public class Controlador {
 			vista.getTextAreaAnio().setText("");
 			vista.getTextAreaDuracion().setText("");
 			vista.getTextAreaNumero().setText("");
+		});	
+		
+		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
+			//Primero comprobamos que el registro anterior no coincida con ninguno de la lista
+			//En caso afirmativo preguntaremos al usuario si quiere guardarlo.
+			try {
+				Cancion posibleCancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
+				vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+				
+				if (!(cancionRepetida(posibleCancion, true))){
+					int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea añadir el registro anterior");
+					if (result == JOptionPane.YES_OPTION){
+						vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+						listaResultado = PlayList.getListaCanciones();
+						JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "Canción guardada correctamente", JOptionPane.INFORMATION_MESSAGE);
+					}
+					else
+						PlayList.getListaCanciones().remove(posibleCancion);
+				}				
+
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}	
 		});
 	}
-	private void borrarCancion(List<PlayList> lista) {
+	
+	private void addCancion() {
+		Cancion cancion = null;
+		try {
+			cancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
+					vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+			
+			new Album(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText());
+			new Artista(vista.getTextAreaArtista().getText());
+			
+		} catch (InvalidYearException y) {
+			JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un año válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+			//e.printStackTrace();
+		} catch (InvalidDurationException d) {
+			JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca una duración válida", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+			//e.printStackTrace();
+		} catch (InvalidTackNumberException t) {
+			JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un número de canción válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+			//e.printStackTrace();
+		} catch (EmptyFieldsException e) {
+			JOptionPane.showMessageDialog(vista.getFrame(), "No puede haber campos vacíos", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+			//e.printStackTrace();
+		}
+
+		//Comprobamos si la canción está repetida o que se esté accediendo a este método mediante el evento de un botón
+		// Si no está repetida, añadiremos la canción a la lista
+		if (!(cancionRepetida(cancion, false))){
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+			listaResultado = PlayList.getListaCanciones();
+			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "Canción guardada correctamente", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	private boolean cancionRepetida(Cancion cancion, boolean formulario){
+		if (cancion != null){
+			for (int i = 0; i < PlayList.getListaCanciones().size()-1; i++) {
+				if (PlayList.getListaCanciones().get(i) instanceof Cancion ){
+					if (PlayList.getListaCanciones().get(i).equals(cancion)){
+						PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+						if (formulario == true)					
+							return true;						
+						else{
+							JOptionPane.showMessageDialog(vista.getFrame(), "Esta canción ya existe", "Alerta", JOptionPane.WARNING_MESSAGE);
+							return true;
+						}
+					};
+				}
+			}
+		}
+		return false;
+	}	
+	
+	
+	private void borrarCancion(List<Cancion> lista) {
 		if (vista.getTabla().getSelectedRow() != -1){
 			Cancion cancionEliminar = null;
 			int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea eliminar "
-			+((Cancion)lista.get(vista.getTabla().getSelectedRow())).getNombreCancion()+" ?", "Aviso", JOptionPane.YES_NO_OPTION);
+			+(lista.get(vista.getTabla().getSelectedRow())).getNombreCancion()+" ?", "Aviso", JOptionPane.YES_NO_OPTION);
 			
 			if (result == JOptionPane.YES_OPTION){
 				cancionEliminar =(Cancion) lista.get(vista.getTabla().getSelectedRow());
@@ -213,9 +266,10 @@ public class Controlador {
 			
 			//Vamos a comprobar si la canción borrada es resultado de una búsqueda, en ese caso la eliminaremos tambíen de la lista general		
 			if (cancionEliminar != null){
-				for (PlayList playList : PlayList.getListaReproduccion()) {
-					if (cancionEliminar.equals(((Cancion)playList))){
-						PlayList.getListaReproduccion().remove(playList);
+				for (Cancion cancion : PlayList.getListaCanciones()) {
+
+					if (cancionEliminar.equals(cancion)){
+						PlayList.getListaCanciones().remove(cancion);
 						break;
 					}
 				}
@@ -224,49 +278,61 @@ public class Controlador {
 	}
 	//Método que modifica el JTable según un critero de búsqueda.
 	private  void buscarPorCategoria(){
-		listaResultado = new ArrayList<PlayList>();
+		listaResultado = new ArrayList<Cancion>();
 
 		switch (vista.getComboBox().getSelectedItem().toString()){
+		
 			case "Nombre":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return c.getNombreCancion().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return p.getNombreCancion().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
+				
 			case "\u00C1lbum":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return c.getNombreAlbum().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return p.getNombreAlbum().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
+				
 			case "Artista":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return c.getNombreArtista().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return p.getNombreArtista().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
+				
 			case "A\u00F1o":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return (c.getAnio()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return (p.getYearAlbum()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
+				
 			case "G\u00E9nero":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return c.getGenero().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return p.getGenero().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
+				
 			case "N\u00FAmero":
-				listaResultado = Cancion.BuscarCancion(PlayList.getListaReproduccion(), p->{
-					Cancion c = (Cancion) p;
-					return (c.getNumeroCancion()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
+				
+				listaResultado = Cancion.BuscarCancion(PlayList.getListaCanciones(), p->{
+				return (p.getNumeroCancion()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
 				});
+				
 				busquedaRealidada = true;
 				break;
 		}

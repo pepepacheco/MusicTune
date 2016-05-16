@@ -19,13 +19,13 @@ class MiTableModel extends AbstractTableModel {
 	//añadirlos a la matriz.
 	
 	//Constructor que inicializa los atributos.
-	public MiTableModel(List<PlayList> lista, String[] cabezera) {  		  
+	public MiTableModel(List<Cancion> lista, String[] cabezera) {  		  
 		table = new String[lista.size()][lista.size()*cabezera.length];
 		campos = new ArrayList<String>();
 		this.cabezera = cabezera;
 		for (int i = 0; i < lista.size(); i++) {
-			if (lista.get(i) instanceof Cancion ){
-				Cancion c = (Cancion) lista.get(i);	
+			
+				Cancion c = lista.get(i);	
 					
 				for (int j = 0; j < cabezera.length; j++) {
 					switch (j){
@@ -39,7 +39,7 @@ class MiTableModel extends AbstractTableModel {
 							campos.add(c.getNombreArtista());
 							break;
 						case 3:
-							campos.add(c.getAnio()+"");
+							campos.add(c.getYearAlbum()+"");
 							break;
 						case 4:
 							campos.add(c.getGenero());
@@ -53,8 +53,7 @@ class MiTableModel extends AbstractTableModel {
 					}
 					table[i][j] = campos.get(j);
 				}
-				campos.clear();
-			}
+				campos.clear();		
 		}
 	}
 	/**
@@ -84,4 +83,5 @@ class MiTableModel extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return cabezera[column];
 	}
+	
 }

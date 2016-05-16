@@ -6,7 +6,7 @@ import java.sql.Statement;
 /**
  * @author Rafel Vargas del Moral
  */
-public abstract class Artista extends PlayList {
+public class Artista {
     private String nombreArtista;
 
     /**
@@ -14,6 +14,8 @@ public abstract class Artista extends PlayList {
      */
     public Artista(String nombre) {
         this.nombreArtista = nombre;
+        
+        addArtista();
     }
 
     /**
@@ -27,9 +29,6 @@ public abstract class Artista extends PlayList {
     public String toString() {
         return "Artista: "+nombreArtista;
     }
-
-	@Override
-    public abstract boolean addCancion();
 
 	@Override
 	public int hashCode() {
@@ -56,15 +55,21 @@ public abstract class Artista extends PlayList {
 		return true;
 	}
 	
+	private boolean addArtista() {
+		return PlayList.getListaArtistas().add(this);
+	}
+
+
 	public static void addArtistaBD() throws SQLException{
 		Statement sentencia = ConexionBD.getConexion().createStatement(); 
 		String insertArtista = "";
 		//INSERT INTO artista VALUES (null, nombreArtista, null, null)				
-		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+		for (Artista artista : PlayList.getListaArtistas()) {			
 			insertArtista = "INSERT INTO artista VALUES ("
-					+ "null,\""+((Artista) cancion).getNombreArtista()+"\","
+					+ "null,\""+artista.getNombreArtista()+"\","
 					+ " null, null);";
 			sentencia.executeUpdate(insertArtista);
 		}			
 	}
+
 }

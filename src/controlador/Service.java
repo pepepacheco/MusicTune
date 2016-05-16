@@ -1,5 +1,7 @@
 package controlador;
 
+import modelo.Album;
+import modelo.Artista;
 import modelo.Cancion;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
@@ -61,8 +63,11 @@ public final class Service {
                     break;
                 }                        
             }           
-            if (comprobacion)         
-                new Cancion(campo[0], campo[1], campo[2], campo[3], campo[4], campo[5], campo[6]);         
+            if (comprobacion) {        
+                new Cancion(campo[0], campo[1], campo[2], campo[3], campo[4], campo[5], campo[6]);
+                new Album(campo[1], campo[3]);
+                new Artista(campo[2]);           
+        	}
             reader.endObject();
         }
         reader.endArray();

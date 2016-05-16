@@ -9,7 +9,7 @@ import modelo.exceptions.InvalidYearException;
  * @author Rafael Vargas del Moral
  * @version 1.0
  */
-public abstract class Album extends Artista {
+public class Album {
     private String nombreAlbum;
     private int anio;
 
@@ -18,13 +18,14 @@ public abstract class Album extends Artista {
      * @param anio
      * @param artista
      */
-    public Album(String nombre, String anio, String artista) throws InvalidYearException {       
-        super(artista);
+    public Album(String nombre, String anio) throws InvalidYearException {       
         this.nombreAlbum = nombre;
         if (anio.matches("[0-9]+"))
             this.anio = Integer.parseInt(anio);   
         else
             throw new InvalidYearException();
+        
+        addAlbum();
     }
 
     /**
@@ -40,12 +41,11 @@ public abstract class Album extends Artista {
     public int getAnio() {
         return anio;
     }
-    
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 1;
 		result = prime * result + ((nombreAlbum == null) ? 0 : nombreAlbum.hashCode());
 		return result;
 	}
@@ -54,7 +54,7 @@ public abstract class Album extends Artista {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -66,20 +66,24 @@ public abstract class Album extends Artista {
 			return false;
 		return true;
 	}
+	
+	private boolean addAlbum() {
+		return PlayList.getListaAlbumes().add(this);
+	}
 
-	@Override
-    public abstract boolean addCancion();    
+ 
 	
 	public static void addAlbumBD() throws SQLException{
 		Statement sentencia = ConexionBD.getConexion().createStatement(); 
 		String insertAlbum = "";
 		//INSERT INTO album VALUES (null, nombreAlbum, año, null)				
-		for (PlayList cancion : PlayList.getListaReproduccion()) {			
+		for (Album album : PlayList.getListaAlbumes()) {			
 			insertAlbum = "INSERT INTO album VALUES ("
-					+ "null,\""+((Album) cancion).getNombreAlbum()+"\","
-					+ ((Album) cancion).getAnio()+","
+					+ "null,\""+album.getNombreAlbum()+"\","
+					+ album.getAnio()+","
 					+ " null);";
 			sentencia.executeUpdate(insertAlbum);
 		}			
 	}
+
 }
