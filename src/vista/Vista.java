@@ -89,7 +89,7 @@ public class Vista {
 
 	private void inicialize(){
 		frame = new JFrame("MusicTune");
-		frame.setBounds(100, 100, 1050, 750);
+		frame.setBounds(100, 100, 1156, 720);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		barraMenu = new JMenuBar();
@@ -360,7 +360,7 @@ public class Vista {
 					.addComponent(lblRegistro, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
 		);
 		footer.setLayout(gl_footer);
-		frame.setMinimumSize(new Dimension(1050, 500));
+		frame.setMinimumSize(new Dimension(1120, 500));
 	}
 	
 	//Getters

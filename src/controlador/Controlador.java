@@ -57,10 +57,10 @@ public class Controlador {
 				try {
 		        	Service.loadJson(vista.getFile().getSelectedFile());		        	
 		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
-		        	CrearTablas.crearTabla(ConexionBD.getConexion());
-					Cancion.addCancionBD();
-					Album.addAlbumBD();
-					Artista.addArtistaBD();			
+		        //	CrearTablas.crearTabla(ConexionBD.getConexion());
+				//	Cancion.addCancionBD();
+				//	Album.addAlbumBD();
+				//	Artista.addArtistaBD();			
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 	
 				} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
@@ -68,9 +68,9 @@ public class Controlador {
 					JOptionPane.showMessageDialog(vista.getFrame(), "Archivo de datos incorrecto", "Error de lectura", JOptionPane.ERROR_MESSAGE);
 				} catch (IllegalStateException i){
 					JOptionPane.showMessageDialog(vista.getFrame(), "Seleccione un archivo válido", "JSON Incorecto", JOptionPane.INFORMATION_MESSAGE);
-				} catch (SQLException s){
-					JOptionPane.showMessageDialog(vista.getFrame(), "No se ha podido conectar a la base de datos", "Error", JOptionPane.INFORMATION_MESSAGE);
-				}
+				} //catch (SQLException s){
+					//JOptionPane.showMessageDialog(vista.getFrame(), "No se ha podido conectar a la base de datos", "Error", JOptionPane.INFORMATION_MESSAGE);
+			//	}
 				 
 	        }
 		});
@@ -215,7 +215,6 @@ public class Controlador {
 					PdfWriter.getInstance(documento, new FileOutputStream(vista.getFile().getSelectedFile()));				
 					documento.open();
 					PdfPTable tabla = new PdfPTable(7);
-					tabla.setWidthPercentage(100);
 					tabla.setHeaderRows(1);
 					for (String campo : CABEZERA) {
 						tabla.addCell(campo);
