@@ -79,6 +79,7 @@ public class Vista {
 	private JButton btnLimpiarFormulario;
 	private FileFilter filtro;
 	private JMenuItem mntmExportarPdf;
+	private JButton btnModificar;
 	
 	public Vista(){
 		inicialize();
@@ -251,11 +252,13 @@ public class Vista {
 		
 		btnSiguiente = new JButton("Siguiente");
 		
-		btnBorrarCampo = new JButton("Borrar campo");
+		btnBorrarCampo = new JButton("Borrar");
 		
-		btnAnadirCampo = new JButton("Añadir campo");
+		btnAnadirCampo = new JButton("Añadir");
 		
-		btnLimpiarFormulario = new JButton("Limpiar formulario");
+		btnLimpiarFormulario = new JButton("Limpiar");
+		
+		btnModificar = new JButton("Modificar");
 		gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -278,18 +281,20 @@ public class Vista {
 							.addComponent(btnAnterior)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnSiguiente)
-							.addPreferredGap(ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 340, Short.MAX_VALUE)
 							.addComponent(btnLimpiarFormulario)
 							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnModificar)
+							.addGap(5)
 							.addComponent(btnAnadirCampo)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnBorrarCampo))
-						.addComponent(textAreaNumero, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
-						.addComponent(textAreaDuracion, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
-						.addComponent(textAreaAlbum, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
-						.addComponent(textAreaArtista, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
-						.addComponent(textAreaGenero, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
-						.addComponent(textAreaAnio, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 710, Short.MAX_VALUE)
+						.addComponent(textAreaNumero, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+						.addComponent(textAreaDuracion, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+						.addComponent(textAreaAlbum, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+						.addComponent(textAreaArtista, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+						.addComponent(textAreaGenero, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
+						.addComponent(textAreaAnio, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
 						.addComponent(textAreaNombre, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE))
 					.addContainerGap())
 		);
@@ -325,18 +330,16 @@ public class Vista {
 						.addComponent(textAreaNumero, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblNumero))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnBorrarCampo)
-								.addComponent(btnAnadirCampo)
-								.addComponent(btnLimpiarFormulario))
-							.addContainerGap())
-						.addGroup(gl_panel_1.createSequentialGroup()
-							.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
-								.addComponent(btnAnterior, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(btnSiguiente, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addContainerGap())))
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+							.addComponent(btnBorrarCampo)
+							.addComponent(btnAnadirCampo)
+							.addComponent(btnModificar)
+							.addComponent(btnLimpiarFormulario))
+						.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
+							.addComponent(btnAnterior, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addComponent(btnSiguiente, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+					.addContainerGap())
 		);
 		panel_1.setLayout(gl_panel_1);
 		JPanelInferior.add(panel_1);
@@ -464,6 +467,9 @@ public class Vista {
 	public JMenuItem getMntmExportarPdf() {
 		return mntmExportarPdf;
 	}
-	
 
+	public JButton getBtnModificar() {
+		return btnModificar;
+	}
+	
 }

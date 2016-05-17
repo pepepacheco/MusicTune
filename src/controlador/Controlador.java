@@ -2,7 +2,6 @@ package controlador;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,13 +40,13 @@ public class Controlador {
 	private int numeroRegistro;
 	private boolean busquedaRealidada = false;
 	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
+	private int antiguoIndice = -1;
 	
 	//Pasamos una referencia de la vista para acceder a sus Clases.
 	public Controlador(Vista v){
 		vista = v;
 		eventos();
 	}
-	
 	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
 		
@@ -164,6 +163,28 @@ public class Controlador {
 			addCancion();
 		});
 		
+		vista.getBtnModificar().addActionListener(r->{
+			try {
+				Cancion posibleCancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
+				vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+				
+				modificarCancionDesdeBoton(posibleCancion);
+
+			} catch (InvalidYearException y) {
+				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un año válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+				//e.printStackTrace();
+			} catch (InvalidDurationException d) {
+				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca una duración válida", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+				//e.printStackTrace();
+			} catch (InvalidTackNumberException t) {
+				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un número de canción válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+				//e.printStackTrace();
+			} catch (EmptyFieldsException e) {
+				JOptionPane.showMessageDialog(vista.getFrame(), "No puede haber campos vacíos", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
+				//e.printStackTrace();
+			}
+		});
+		
 		vista.getBtnBorrarCampo().addActionListener(r->{
 			//Compruebo si el campo a borrar es resultado de una búsqueda o del listado global
 			if (listaResultado != null && listaResultado.size() > 0){
@@ -185,27 +206,20 @@ public class Controlador {
 
 		
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
-			//Primero comprobamos que el registro anterior no coincida con ninguno de la lista
-			//En caso afirmativo preguntaremos al usuario si quiere guardarlo.
-			try {
-				Cancion posibleCancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
-				vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+			if (antiguoIndice != -1){	
+				try {
+					Cancion posibleCancion = new Cancion(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
+					vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
 				
-				if (!(cancionRepetida(posibleCancion, true))){
-					int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea añadir el registro anterior");
-					if (result == JOptionPane.YES_OPTION){
-						vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
-						listaResultado = PlayList.getListaCanciones();
-						JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "Canción guardada correctamente", JOptionPane.INFORMATION_MESSAGE);
-					}
-					else
-						PlayList.getListaCanciones().remove(posibleCancion);
-				}				
-
-			} catch (Exception e) {
-				//e.printStackTrace();
-			}	
-		});
+					if (!(cancionRepetida(posibleCancion, true))){
+						modificarCancion(posibleCancion);
+					}				
+				} catch (Exception e) {
+					//e.printStackTrace();
+				}
+			}
+			antiguoIndice = vista.getTabla().getSelectedRow();
+		});		
 		
 		vista.getMntmExportarPdf().addActionListener(r->{
 			
@@ -237,6 +251,7 @@ public class Controlador {
 			} 
 		});
 	}
+	
 	
 	private void addCancion() {
 		Cancion cancion = null;
@@ -287,7 +302,51 @@ public class Controlador {
 			}
 		}
 		return false;
-	}	
+	}
+	
+	private void modificarCancion(Cancion posibleCancion){
+		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar el registro anterior");
+		if (result == JOptionPane.YES_OPTION){
+			if (listaResultado != null && listaResultado.size() > 0){
+				Cancion cancionAModificar = listaResultado.get(antiguoIndice);
+				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
+				PlayList.getListaCanciones().set(indice, posibleCancion);				
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+			}
+			else{
+				PlayList.getListaCanciones().set(antiguoIndice, posibleCancion);
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+			}		
+			
+			listaResultado = PlayList.getListaCanciones();
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+			PlayList.getListaCanciones().remove(posibleCancion);
+	}
+	
+	private void modificarCancionDesdeBoton(Cancion posibleCancion){
+		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar este registro");
+		if (result == JOptionPane.YES_OPTION){
+			if (listaResultado != null && listaResultado.size() > 0){
+				Cancion cancionAModificar = listaResultado.get(vista.getTabla().getSelectedRow());
+				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
+				PlayList.getListaCanciones().set(indice, posibleCancion);				
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+			}
+			else{
+				PlayList.getListaCanciones().set(vista.getTabla().getSelectedRow(), posibleCancion);
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+			}		
+			
+			listaResultado = PlayList.getListaCanciones();
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+			PlayList.getListaCanciones().remove(posibleCancion);
+	}
 	
 	
 	private void borrarCancion(List<Cancion> lista) {

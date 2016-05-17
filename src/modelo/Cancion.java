@@ -49,7 +49,7 @@ public final class Cancion {
         this.nombreAlbum = album;
         this.nombreArtista = artista;
         
-        if (year.matches("[0-9]+"))
+        if (year.matches("[0-9]{4}"))
         	this.yearAlbum = Integer.parseInt(year);
         else
         	throw new InvalidYearException();
@@ -73,7 +73,7 @@ public final class Cancion {
         addCancion();
     }
 
-    //geters
+    //geters and setters
     public String getNombreCancion() {
         return nombreCancion;
     }
@@ -102,7 +102,35 @@ public final class Cancion {
         return numeroCancion;  
     }
     
-    private boolean addCancion() {
+    public void setNombreCancion(String nombreCancion) {
+		this.nombreCancion = nombreCancion;
+	}
+
+	public void setNombreAlbum(String nombreAlbum) {
+		this.nombreAlbum = nombreAlbum;
+	}
+
+	public void setNombreArtista(String nombreArtista) {
+		this.nombreArtista = nombreArtista;
+	}
+
+	public void setYearAlbum(int yearAlbum) {
+		this.yearAlbum = yearAlbum;
+	}
+
+	public void setGenero(String genero) {
+		this.genero = genero;
+	}
+
+	public void setDuracion(int duracion) {
+		this.duracion = duracion;
+	}
+
+	public void setNumeroCancion(int numeroCancion) {
+		this.numeroCancion = numeroCancion;
+	}
+
+	private boolean addCancion() {
     	return PlayList.getListaCanciones().add(this);
     }
     
