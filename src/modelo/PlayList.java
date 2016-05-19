@@ -11,20 +11,20 @@ import java.util.Set;
  */
 public final class PlayList {
 
-    private static List<Cancion> listaCanciones = new ArrayList<Cancion>();
-    private static Set<Album> listaAlbumes = new HashSet<Album>();
-    private static Set<Artista> listaArtistas = new HashSet<Artista>();
+    private static List<CancionDTO> listaCanciones = new ArrayList<CancionDTO>();
+    private static Set<AlbumDTO> listaAlbumes = new HashSet<AlbumDTO>();
+    private static Set<ArtistaDTO> listaArtistas = new HashSet<ArtistaDTO>();
     
 
-    public  static List<Cancion> getListaCanciones() {
+    public  static List<CancionDTO> getListaCanciones() {
         return listaCanciones;
     }
     
-    public  static Set<Album> getListaAlbumes() {
+    public  static Set<AlbumDTO> getListaAlbumes() {
         return listaAlbumes;
     }
     
-    public  static Set<Artista> getListaArtistas() {
+    public  static Set<ArtistaDTO> getListaArtistas() {
         return listaArtistas;
     }
    

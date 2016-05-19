@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import modelo.Album;
+import modelo.AlbumDTO;
 
 /**
  * @author Rafael Vargas del Moral

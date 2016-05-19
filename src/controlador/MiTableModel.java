@@ -3,7 +3,7 @@ package controlador;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import modelo.Cancion;
+import modelo.CancionDTO;
 import modelo.PlayList;
 
 /**
@@ -19,13 +19,13 @@ class MiTableModel extends AbstractTableModel {
 	//añadirlos a la matriz.
 	
 	//Constructor que inicializa los atributos.
-	public MiTableModel(List<Cancion> lista, String[] cabezera) {  		  
+	public MiTableModel(List<CancionDTO> lista, String[] cabezera) {  		  
 		table = new String[lista.size()][lista.size()*cabezera.length];
 		campos = new ArrayList<String>();
 		this.cabezera = cabezera;
 		for (int i = 0; i < lista.size(); i++) {
 			
-				Cancion c = lista.get(i);	
+				CancionDTO c = lista.get(i);	
 					
 				for (int j = 0; j < cabezera.length; j++) {
 					switch (j){

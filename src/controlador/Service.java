@@ -1,8 +1,8 @@
 package controlador;
 
-import modelo.Album;
-import modelo.Artista;
-import modelo.Cancion;
+import modelo.AlbumDTO;
+import modelo.ArtistaDTO;
+import modelo.CancionDTO;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
@@ -64,9 +64,9 @@ public final class Service {
                 }                        
             }           
             if (comprobacion) {        
-                new Cancion(campo[0], campo[1], campo[2], campo[3], campo[4], campo[5], campo[6]);
-                new Album(campo[1], campo[3]);
-                new Artista(campo[2]);           
+                new CancionDTO(campo[0], campo[1], campo[2], campo[3], campo[4], campo[5], campo[6]);
+                new AlbumDTO(campo[1], campo[3]);
+                new ArtistaDTO(campo[2]);           
         	}
             reader.endObject();
         }

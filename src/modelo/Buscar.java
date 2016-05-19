@@ -5,5 +5,5 @@ package modelo;
  */
 @FunctionalInterface
 public interface Buscar {
-    boolean criterio (Cancion c); //Criterio el cual implementaremos segun nos convenga
+    boolean criterio (CancionDTO c); //Criterio el cual implementaremos segun nos convenga
 }
