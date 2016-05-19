@@ -10,18 +10,19 @@ import vista.Vista;
 
 public class ConexionBD {
 	static Vista vista = new Vista();
-	private static Connection conexion;
+	private static Connection conexion = null;
 	
 	private ConexionBD(){};
 	
 	public static Connection getConexion(){
 		//Usamos la filosofía del patrón singleton
-		
+		Runtime.getRuntime().addShutdownHook(new MiShoutdownHuk());
 		if (conexion == null){
+			
 			ResourceBundle rb = ResourceBundle.getBundle("sqlite");
 			final String URL = rb.getString("url");
 			final String DRIVER = rb.getString("driver");
-			Runtime.getRuntime().addShutdownHook(new MiShoutdownHuk());
+			
 			try {
 				//Conectamos con la base de datos
 				Class.forName(DRIVER);

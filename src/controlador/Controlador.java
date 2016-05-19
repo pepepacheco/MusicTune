@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
@@ -17,11 +16,12 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import modelo.AlbumDAOImpSQLite;
 import modelo.AlbumDTO;
+import modelo.ArtistaDAOImpSQLite;
 import modelo.ArtistaDTO;
+import modelo.CancionDAOImpSQLite;
 import modelo.CancionDTO;
-import modelo.ConexionBD;
-import modelo.CrearTablas;
 import modelo.PlayList;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
@@ -41,6 +41,9 @@ public class Controlador {
 	private boolean busquedaRealidada = false;
 	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
 	private int antiguoIndice = -1;
+	private CancionDAOImpSQLite cancionDAO;
+	private ArtistaDAOImpSQLite artistaDAO;
+	private AlbumDAOImpSQLite albumDAO;
 	
 	//Pasamos una referencia de la vista para acceder a sus Clases.
 	public Controlador(Vista v){
@@ -56,21 +59,25 @@ public class Controlador {
 				try {
 		        	Service.loadJson(vista.getFile().getSelectedFile());		        	
 		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
-		        //	CrearTablas.crearTabla(ConexionBD.getConexion());
-				//	Cancion.addCancionBD();
-				//	Album.addAlbumBD();
-				//	Artista.addArtistaBD();			
+
+		        	artistaDAO = new ArtistaDAOImpSQLite();
+		        	artistaDAO.crearTalba();
+		        	artistaDAO.addArtista(PlayList.getListaArtistas());
+		        	albumDAO = new AlbumDAOImpSQLite();
+		        	albumDAO.crearTalba();
+		        	albumDAO.addAlbum(PlayList.getListaAlbumes());
+		        	cancionDAO = new CancionDAOImpSQLite();
+		        	cancionDAO.crearTalba();
+
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 	
 				} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
 					//e.printStackTrace();
 					JOptionPane.showMessageDialog(vista.getFrame(), "Archivo de datos incorrecto", "Error de lectura", JOptionPane.ERROR_MESSAGE);
 				} catch (IllegalStateException i){
+					//i.printStackTrace();
 					JOptionPane.showMessageDialog(vista.getFrame(), "Seleccione un archivo válido", "JSON Incorecto", JOptionPane.INFORMATION_MESSAGE);
-				} //catch (SQLException s){
-					//JOptionPane.showMessageDialog(vista.getFrame(), "No se ha podido conectar a la base de datos", "Error", JOptionPane.INFORMATION_MESSAGE);
-			//	}
-				 
+				}				 
 	        }
 		});
 
@@ -167,8 +174,8 @@ public class Controlador {
 			try {
 				CancionDTO posibleCancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
 				vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
-				
-				modificarCancionDesdeBoton(posibleCancion);
+				if (!cancionRepetida(posibleCancion, false))
+					modificarCancionDesdeBoton(posibleCancion);
 
 			} catch (InvalidYearException y) {
 				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un año válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
