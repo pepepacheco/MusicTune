@@ -58,24 +58,20 @@ public class Controlador {
 		if (bd.exists() && bd.length() > 4000){
 			try {
 				Service.autoLoad();
+				vista.getAbrir().setEnabled(false);
 			} catch (InvalidYearException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (InvalidDurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (InvalidTackNumberException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			} catch (EmptyFieldsException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+			
 		}
 	}
-	
-	
 	
 	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
@@ -97,6 +93,7 @@ public class Controlador {
 		        	cancionDAO.addCancion(PlayList.getListaCanciones());
 		        	Service.crearVista();
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+					vista.getAbrir().setEnabled(false);
 	
 				} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {
 					//e.printStackTrace();
