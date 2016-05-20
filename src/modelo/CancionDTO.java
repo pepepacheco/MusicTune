@@ -4,16 +4,10 @@ import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 //import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 //import java.util.Scanner;
-
-import javax.swing.JProgressBar;
 
 /**
  * @author Rafael Vargas Del Moral
@@ -194,24 +188,6 @@ public final class CancionDTO {
 		} else if (!nombreCancion.equals(other.nombreCancion))
 			return false;
 		return true;
-	}
-	
-	public static void addCancionBD() throws SQLException{
-
-		Statement sentencia = ConexionBD.getConexion().createStatement(); 
-		String insertCancion = "";
-		
-		//INSERT INTO cancion VALUES (null, Nombre, Género, Duración, Número)				
-		for (CancionDTO cancion : PlayList.getListaCanciones()) {
-			
-			insertCancion = "INSERT INTO cancion VALUES ("
-					+ "null, \""+cancion.getNombreCancion()+"\", "
-					+ "\""+cancion.getGenero()+"\", "+
-					cancion.getDuracion()+", "+
-					cancion.getNumeroCancion()+")";	
-			
-			sentencia.executeUpdate(insertCancion);
-		}			
 	}
    
 /*  

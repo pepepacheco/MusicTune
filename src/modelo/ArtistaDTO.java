@@ -1,8 +1,5 @@
 package modelo;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 /**
  * @author Rafel Vargas del Moral
  */
@@ -58,17 +55,5 @@ public class ArtistaDTO {
 		return PlayList.getListaArtistas().add(this);
 	}
 
-
-	public static void addArtistaBD() throws SQLException{
-		Statement sentencia = ConexionBD.getConexion().createStatement(); 
-		String insertArtista = "";
-		//INSERT INTO artista VALUES (null, nombreArtista, null, null)				
-		for (ArtistaDTO artista : PlayList.getListaArtistas()) {			
-			insertArtista = "INSERT INTO artista VALUES ("
-					+ "null,\""+artista.getNombreArtista()+"\","
-					+ " null, null);";
-			sentencia.executeUpdate(insertArtista);
-		}			
-	}
 
 }

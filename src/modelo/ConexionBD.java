@@ -4,12 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import javax.swing.JOptionPane;
 import org.sqlite.SQLiteConfig;
-import vista.Vista;
 
 public class ConexionBD {
-	//static Vista vista = new Vista();
 	private static Connection conexion = null;
 	
 	private ConexionBD(){};

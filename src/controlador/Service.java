@@ -4,15 +4,12 @@ import modelo.AlbumDTO;
 import modelo.ArtistaDTO;
 import modelo.CancionDTO;
 import modelo.ConexionBD;
-import modelo.PlayList;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
 //import modelo.PlayList;
 import com.google.gson.stream.JsonReader;
-import com.itextpdf.text.log.SysoCounter;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

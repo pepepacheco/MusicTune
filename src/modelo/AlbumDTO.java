@@ -1,8 +1,5 @@
 package modelo;
 
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import modelo.exceptions.InvalidYearException;
 
 /**
