@@ -13,8 +13,7 @@ public class ArtistaDTO {
      * @param nombre
      */
     public ArtistaDTO(String nombre) {
-        this.nombreArtista = nombre;
-        
+        this.nombreArtista = nombre;      
         addArtista();
     }
 
@@ -27,7 +26,7 @@ public class ArtistaDTO {
 
     @Override
     public String toString() {
-        return "Artista: "+nombreArtista;
+        return "Artista: "+nombreArtista+"\n";
     }
 
 	@Override

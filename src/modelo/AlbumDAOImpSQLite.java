@@ -17,7 +17,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 		String sql = "CREATE TABLE album ("
 				+ "id INTEGER ,"
 				+ " nombre TEXT PRIMARY KEY,"
-				+ " año INTEGER);";
+				+ " year INTEGER);";
 		try {
 			sentencia = conexion.createStatement();
 			sentencia.executeUpdate(sqlDelete);

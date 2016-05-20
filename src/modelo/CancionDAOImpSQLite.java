@@ -82,12 +82,11 @@ public class CancionDAOImpSQLite implements CancionDAO {
 					+ "null , \""+c.getNombreCancion()+"\" , \""+c.getNombreAlbum()+"\" ,"
 					+ " \""+c.getNombreArtista()+"\" , \""+c.getGenero()+"\" , "
 					+ ""+c.getDuracion()+" , "+c.getNumeroCancion()+" ); ";		
-			System.out.println(sql);
 			try {
 				sentencia = conexion.createStatement();
 				sentencia.executeUpdate(sql);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				return false;
 				
 			}

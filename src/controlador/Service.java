@@ -3,16 +3,25 @@ package controlador;
 import modelo.AlbumDTO;
 import modelo.ArtistaDTO;
 import modelo.CancionDTO;
+import modelo.ConexionBD;
+import modelo.PlayList;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
 //import modelo.PlayList;
 import com.google.gson.stream.JsonReader;
+import com.itextpdf.text.log.SysoCounter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * @author Rafael Vargas del Moral
@@ -21,6 +30,10 @@ import java.io.IOException;
 
 public final class Service {
 	private static JsonReader reader;
+	private static Connection conexion = ConexionBD.getConexion();
+	private static PreparedStatement sentenciaPreparada;
+	private static Statement sentencia;
+	private static ResultSet resultado;
 
 	/**
 	 * Método que lee nuestro fichero JSON y crea los objetos.
@@ -72,5 +85,44 @@ public final class Service {
         }
         reader.endArray();
         //System.out.println(PlayList.getListaReproduccion());
+    }
+    
+	public static boolean crearVista() {
+		//String sqlDelete = "DROP VIEW IF EXISTS carga_datos;";
+		String sql = "create view carga_datos as"
+					+ " select cancion.nombre, album.nombre, artista.nombre, album.year, cancion.genero, cancion.duracion, cancion.numero"
+					+ " from artista, album, cancion"
+					+ " where cancion.album = album.nombre and cancion.artista = artista.nombre;";
+		
+		try {
+			sentencia = conexion.createStatement();
+			//sentencia.executeQuery(sqlDelete);
+			sentencia.execute(sql);		
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+    
+    public static boolean autoLoad() throws InvalidYearException, InvalidDurationException, InvalidTackNumberException, EmptyFieldsException {
+    	String sql = "SELECT * FROM CARGA_DATOS;";   
+    	try {
+			sentencia = conexion.createStatement();
+			resultado = sentencia.executeQuery(sql);
+			
+			while(resultado.next()) {
+				//Cuando se crea un objeto de tipo CancionDTO, AlbumDTO o ArtistaDTO, se añade automáticamente a la lista.
+				new CancionDTO(resultado.getString(1), resultado.getString(2),
+				resultado.getString(3), resultado.getString(4), resultado.getString(5), resultado.getString(6), resultado.getString(7));
+				new AlbumDTO(resultado.getString(2), resultado.getString(4));
+				new ArtistaDTO(resultado.getString(3));
+			}			
+
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			return false;
+		}
+    	return true;
     }
 }

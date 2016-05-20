@@ -71,19 +71,10 @@ public class AlbumDTO {
 		return PlayList.getListaAlbumes().add(this);
 	}
 
- 
-	
-	public static void addAlbumBD() throws SQLException{
-		Statement sentencia = ConexionBD.getConexion().createStatement(); 
-		String insertAlbum = "";
-		//INSERT INTO album VALUES (null, nombreAlbum, año, null)				
-		for (AlbumDTO album : PlayList.getListaAlbumes()) {			
-			insertAlbum = "INSERT INTO album VALUES ("
-					+ "null,\""+album.getNombreAlbum()+"\","
-					+ album.getAnio()+","
-					+ " null);";
-			sentencia.executeUpdate(insertAlbum);
-		}			
+	@Override
+	public String toString() {
+		return "nombreAlbum: " + nombreAlbum + ", año: " + anio + "\n";
 	}
-
+	
+	
 }

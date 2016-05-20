@@ -2,6 +2,7 @@ package controlador;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,7 +50,33 @@ public class Controlador {
 	public Controlador(Vista v){
 		vista = v;
 		eventos();
+		loadBD();
+		
 	}
+	private void loadBD() {
+		File bd = new File("database.db");
+		if (bd.exists() && bd.length() > 4000){
+			try {
+				Service.autoLoad();
+			} catch (InvalidYearException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidDurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvalidTackNumberException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (EmptyFieldsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+		}
+	}
+	
+	
+	
 	//Método donde se van a manejar todos los eventos.
 	private void eventos(){
 		
@@ -59,7 +86,6 @@ public class Controlador {
 				try {
 		        	Service.loadJson(vista.getFile().getSelectedFile());		        	
 		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
-
 		        	artistaDAO = new ArtistaDAOImpSQLite();
 		        	artistaDAO.crearTalba();
 		        	artistaDAO.addArtista(PlayList.getListaArtistas());
@@ -68,7 +94,8 @@ public class Controlador {
 		        	albumDAO.addAlbum(PlayList.getListaAlbumes());
 		        	cancionDAO = new CancionDAOImpSQLite();
 		        	cancionDAO.crearTalba();
-
+		        	cancionDAO.addCancion(PlayList.getListaCanciones());
+		        	Service.crearVista();
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 	
 				} catch (IOException | InvalidYearException | InvalidDurationException | InvalidTackNumberException | EmptyFieldsException e) {

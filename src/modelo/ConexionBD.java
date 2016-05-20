@@ -9,7 +9,7 @@ import org.sqlite.SQLiteConfig;
 import vista.Vista;
 
 public class ConexionBD {
-	static Vista vista = new Vista();
+	//static Vista vista = new Vista();
 	private static Connection conexion = null;
 	
 	private ConexionBD(){};
@@ -35,7 +35,6 @@ public class ConexionBD {
 				conexion = DriverManager.getConnection(URL, conf.toProperties());
 				
 			} catch (ClassNotFoundException | SQLException e) {
-				JOptionPane.showMessageDialog(vista.getFrame(), "Error de Conexión a la base de datos");
 				//e.printStackTrace();
 			} 	
 		}
@@ -49,7 +48,6 @@ public class ConexionBD {
 				try {
 					conexion.close();
 				} catch (SQLException e) {
-					JOptionPane.showMessageDialog(vista.getFrame(), "Error inesperado");
 					//e.printStackTrace();
 				}
 		}
