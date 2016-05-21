@@ -257,33 +257,37 @@ public class Controlador {
 			Document documento = new Document();	
 			try {
 				if (vista.getFile().showSaveDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
-					PdfWriter.getInstance(documento, new FileOutputStream(vista.getFile().getSelectedFile()));				
-					documento.open();
-					PdfPTable tabla = new PdfPTable(7);
-					tabla.setHeaderRows(1);
-					for (String campo : CABEZERA) {
-						tabla.addCell(campo);
-					}					
-					for (CancionDTO cancion : PlayList.getListaCanciones()) {
-						tabla.addCell(new Phrase(cancion.getNombreCancion(), FontFactory.getFont(FontFactory.HELVETICA, 6)));
-						tabla.addCell(new Phrase(cancion.getNombreAlbum(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
-						tabla.addCell(new Phrase(cancion.getNombreArtista(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
-						tabla.addCell(new Phrase(cancion.getYearAlbum()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
-						tabla.addCell(new Phrase(cancion.getGenero(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
-						tabla.addCell(new Phrase(cancion.getDuracion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
-						tabla.addCell(new Phrase(cancion.getNumeroCancion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
-					}					
-				documento.add(tabla);
-				documento.close();
+					if (PlayList.getListaCanciones().size() > 0){
+						PdfWriter.getInstance(documento, new FileOutputStream(vista.getFile().getSelectedFile()));				
+						documento.open();
+						PdfPTable tabla = new PdfPTable(7);
+						tabla.setHeaderRows(1);
+						for (String campo : CABEZERA) {
+							tabla.addCell(campo);
+						}					
+						for (CancionDTO cancion : PlayList.getListaCanciones()) {
+							tabla.addCell(new Phrase(cancion.getNombreCancion(), FontFactory.getFont(FontFactory.HELVETICA, 6)));
+							tabla.addCell(new Phrase(cancion.getNombreAlbum(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+							tabla.addCell(new Phrase(cancion.getNombreArtista(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
+							tabla.addCell(new Phrase(cancion.getYearAlbum()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+							tabla.addCell(new Phrase(cancion.getGenero(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+							tabla.addCell(new Phrase(cancion.getDuracion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+							tabla.addCell(new Phrase(cancion.getNumeroCancion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						}					
+						documento.add(tabla);
+						documento.close();
+					}
+					else
+						JOptionPane.showMessageDialog(vista.getFrame(), "La tabla no contiene datos", "Error", JOptionPane.ERROR_MESSAGE);
+
 				}
-			} catch (FileNotFoundException | DocumentException e) {
+			} catch (IOException | DocumentException e) {
 				JOptionPane.showMessageDialog(vista.getFrame(), "No ha sido posible exportar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
 				//e.printStackTrace();
 			} 
 		});
 	}
-	
-	
+
 	private void addCancion() {
 		CancionDTO cancion = null;
 		try {
