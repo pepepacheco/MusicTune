@@ -28,7 +28,8 @@ import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
 import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
-import vista.Vista;
+import vista.Creditos;
+import vista.VistaGeneral;
 
 /**
  * @author Rafael Vargas del Moral
@@ -36,7 +37,7 @@ import vista.Vista;
  */
 
 public class Controlador {
-	private Vista vista;
+	private VistaGeneral vista;
 	private List<CancionDTO> listaResultado;
 	private int numeroRegistro;
 	private boolean busquedaRealidada = false;
@@ -47,7 +48,7 @@ public class Controlador {
 	private AlbumDAOImpSQLite albumDAO;
 	
 	//Pasamos una referencia de la vista para acceder a sus Clases.
-	public Controlador(Vista v){
+	public Controlador(VistaGeneral v){
 		vista = v;
 		eventos();
 		loadBD();
@@ -257,22 +258,23 @@ public class Controlador {
 			Document documento = new Document();	
 			try {
 				if (vista.getFile().showSaveDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
+					final String[]  CABEZERA_PDF = {"NOMBRE","ÁLBUM","ARTISTA"};
 					if (PlayList.getListaCanciones().size() > 0){
 						PdfWriter.getInstance(documento, new FileOutputStream(vista.getFile().getSelectedFile()));				
 						documento.open();
-						PdfPTable tabla = new PdfPTable(7);
+						PdfPTable tabla = new PdfPTable(3);
 						tabla.setHeaderRows(1);
-						for (String campo : CABEZERA) {
+						for (String campo : CABEZERA_PDF) {
 							tabla.addCell(campo);
 						}					
 						for (CancionDTO cancion : PlayList.getListaCanciones()) {
 							tabla.addCell(new Phrase(cancion.getNombreCancion(), FontFactory.getFont(FontFactory.HELVETICA, 6)));
 							tabla.addCell(new Phrase(cancion.getNombreAlbum(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
 							tabla.addCell(new Phrase(cancion.getNombreArtista(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
-							tabla.addCell(new Phrase(cancion.getYearAlbum()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
-							tabla.addCell(new Phrase(cancion.getGenero(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
-							tabla.addCell(new Phrase(cancion.getDuracion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
-							tabla.addCell(new Phrase(cancion.getNumeroCancion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						//	tabla.addCell(new Phrase(cancion.getYearAlbum()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						//	tabla.addCell(new Phrase(cancion.getGenero(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+						//	tabla.addCell(new Phrase(cancion.getDuracion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
+						//	tabla.addCell(new Phrase(cancion.getNumeroCancion()+"", FontFactory.getFont(FontFactory.HELVETICA, 12)));
 						}					
 						documento.add(tabla);
 						documento.close();
@@ -285,6 +287,12 @@ public class Controlador {
 				JOptionPane.showMessageDialog(vista.getFrame(), "No ha sido posible exportar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
 				//e.printStackTrace();
 			} 
+		});
+		
+		vista.getMntmCreditos().addActionListener(r->{
+			Creditos cr = new Creditos();
+			cr.setLocationRelativeTo(vista.getFrame());
+			cr.setVisible(true);
 		});
 	}
 

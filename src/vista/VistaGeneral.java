@@ -29,11 +29,11 @@ import java.awt.FlowLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 
-public class Vista {
+public class VistaGeneral {
 	private JFrame frame;
 	private JMenuBar barraMenu;
 	private JMenu menuArchivo;
-	private JMenu editar;
+	private JMenu menuAyuda;
 	private JMenuItem abrir;
 	private JMenuItem salir;
 	private JPanel panelHead;
@@ -80,8 +80,9 @@ public class Vista {
 	private FileFilter filtro;
 	private JMenuItem mntmExportarPdf;
 	private JButton btnModificar;
+	private JMenuItem mntmAcercaDe;
 	
-	public Vista(){
+	public VistaGeneral(){
 		inicialize();
 		file = new JFileChooser();
     	filtro = new FileNameExtensionFilter("JSON file", "json", "JSON");
@@ -110,8 +111,11 @@ public class Vista {
 		salir = new JMenuItem("Salir");
 		menuArchivo.add(salir);
 		
-		editar = new JMenu("Editar");
-		barraMenu.add(editar);
+		menuAyuda = new JMenu("Ayuda");
+		barraMenu.add(menuAyuda);
+		
+		mntmAcercaDe = new JMenuItem("Acerda de...");
+		menuAyuda.add(mntmAcercaDe);
 		
 		splitPane = new JSplitPane();
 		splitPane.setResizeWeight(1.0);
@@ -471,5 +475,14 @@ public class Vista {
 	public JButton getBtnModificar() {
 		return btnModificar;
 	}
+
+	public JMenuItem getMntmCreditos() {
+		return mntmAcercaDe;
+	}
+	
+	
+
+	
+	
 	
 }

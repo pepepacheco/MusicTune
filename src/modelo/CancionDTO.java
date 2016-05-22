@@ -4,10 +4,10 @@ import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import modelo.exceptions.EmptyFieldsException;
 import modelo.exceptions.InvalidDurationException;
-//import java.io.File;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.Scanner;
+import java.util.Scanner;
 
 /**
  * @author Rafael Vargas Del Moral
@@ -189,27 +189,28 @@ public final class CancionDTO {
 			return false;
 		return true;
 	}
-   
-/*  
-    //Main Testeo   
+	
+	//Main Testeo
+/*   
     public static void main(String[] args) {
-        try (Scanner in = new Scanner(new File("sources/discographies.csv"))) {
+        try (Scanner in = new Scanner(new File("resources/discographies.csv"))) {
             in.nextLine();
             while (in.hasNextLine()){
                 String[] campos = in.nextLine().split(";");
-                new Cancion(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
+                new CancionDTO(campos[0], campos[1], campos[2], campos[3], campos[4], campos[5], campos[6]);
             }
         } catch (Exception ex) {
             
         }        
-        //System.out.println(PlayList.getListaReproduccion());
-        //System.out.println(Cancion.BuscarCancion(PlayList.getListaReproduccion(), b-> ((Cancion) b).getNombreAlbum().contains("Nevermind")));
-        System.out.println(Cancion.BuscarCancion(PlayList.getListaReproduccion(), new Buscar() {
+        //System.out.println(PlayList.getListaCanciones());
+        //System.out.println(CancionDTO.BuscarCancion(PlayList.getListaCanciones(), b->  b.getNombreAlbum().contains("Nevermind")));
+        
+        System.out.println(CancionDTO.BuscarCancion(PlayList.getListaCanciones(), new Buscar() {
             @Override
-            public boolean criterio(PlayList p) {
-                return ((Cancion) p).getNombreCancion().toLowerCase().startsWith("h");
+            public boolean criterio(CancionDTO d) {
+                return d.getNombreCancion().toLowerCase().startsWith("h");
             }
         }));
     }
-*/ 
+*/        
 }
