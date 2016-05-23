@@ -3,7 +3,6 @@ package controlador;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import modelo.exceptions.InvalidTackNumberException;
 import modelo.exceptions.InvalidYearException;
 import vista.Creditos;
 import vista.VistaGeneral;
+import vista.MiTableModel;
 
 /**
  * @author Rafael Vargas del Moral
@@ -41,6 +41,7 @@ public class Controlador {
 	private List<CancionDTO> listaResultado;
 	private int numeroRegistro;
 	private boolean busquedaRealidada = false;
+	private boolean botonEliminar = false;
 	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
 	private int antiguoIndice = -1;
 	private CancionDAOImpSQLite cancionDAO;
@@ -50,6 +51,9 @@ public class Controlador {
 	//Pasamos una referencia de la vista para acceder a sus Clases.
 	public Controlador(VistaGeneral v){
 		vista = v;
+    	artistaDAO = new ArtistaDAOImpSQLite();
+    	albumDAO = new AlbumDAOImpSQLite();
+    	cancionDAO = new CancionDAOImpSQLite();
 		eventos();
 		loadBD();
 		
@@ -69,8 +73,7 @@ public class Controlador {
 			} catch (EmptyFieldsException e) {
 				//e.printStackTrace();
 			}
-			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
-			
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));			
 		}
 	}
 	
@@ -83,16 +86,14 @@ public class Controlador {
 				try {
 		        	Service.loadJson(vista.getFile().getSelectedFile());		        	
 		        	JOptionPane.showMessageDialog(vista.getFrame(), "Introduciendo datos en la base de datos", "Espere...", JOptionPane.INFORMATION_MESSAGE);
-		        	artistaDAO = new ArtistaDAOImpSQLite();
 		        	artistaDAO.crearTalba();
 		        	artistaDAO.addArtista(PlayList.getListaArtistas());
-		        	albumDAO = new AlbumDAOImpSQLite();
 		        	albumDAO.crearTalba();
 		        	albumDAO.addAlbum(PlayList.getListaAlbumes());
-		        	cancionDAO = new CancionDAOImpSQLite();
 		        	cancionDAO.crearTabla();
 		        	cancionDAO.addCancion(PlayList.getListaCanciones());
 		        	Service.crearVista();
+		    		Service.createTrigger();
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 					vista.getAbrir().setEnabled(false);
 	
@@ -126,58 +127,10 @@ public class Controlador {
 				buscarPorCategoria();
 		});
 		
+		
+		
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
-			numeroRegistro = vista.getTabla().getSelectedRow();				
-			String[] campos = new String[7];
-			for (int i = 0; i < 7; i++) {
-				if (numeroRegistro != -1)
-					campos[i] = (String) vista.getTabla().getModel().getValueAt(numeroRegistro, i);
-			}
-			vista.getTextAreaNombre().setText(campos[0]);
-			vista.getTextAreaAlbum().setText(campos[1]);
-			vista.getTextAreaArtista().setText(campos[2]);
-			vista.getTextAreaAnio().setText(campos[3]);
-			vista.getTextAreaGenero().setText(campos[4]);
-			if (campos[5] != null)
-				campos[5] = campos[5].replace(" ms", "");
-			vista.getTextAreaDuracion().setText(campos[5]);
-			vista.getTextAreaNumero().setText(campos[6]);
-			
-			String artistaActual="";
-			String artistaElegido = vista.getTextAreaArtista().getText();
 
-			if (!artistaElegido.equals(artistaActual)){
-				artistaActual = artistaElegido;
-		        String url;
-				switch (vista.getTextAreaArtista().getText()){
-					case "Nirvana":
-						url = "resources/nirvana.jpg";
-						break;
-					case "Pink Floyd":
-						url = "resources/pink_floyd.jpg";
-						break;
-					case "Dire Straits":
-						url = "resources/dire_straits.jpeg";
-						break;
-					case "AC/DC":
-						url = "resources/ac_dc.jpeg";
-						break;
-					case "Queen":
-						url = "resources/queen.jpg";
-						break;
-					case "Muse":
-						url = "resources/muse.jpg";
-						break;
-					default:
-						url = "resources/no_image.jpg";	
-				}
-				vista.getJLabelImagen().setIcon(new ImageIcon(url));
-			}
-			
-			if (!busquedaRealidada)
-				vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+PlayList.getListaCanciones().size());
-			else
-				vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+listaResultado.size());
 		});
 		
 		vista.getBtnSiguiente().addActionListener(r->{			
@@ -192,15 +145,32 @@ public class Controlador {
 		});
 		
 		vista.getBtnAnadirCampo().addActionListener(r->{
-			addCancion();
+			try{
+				if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
+					albumDAO.addAlbum(new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText()));
+				
+				if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0)
+					artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
+				addCancion();
+			} catch (Exception e){
+				//e.printStackTrace();
+			}
 		});
 		
-		vista.getBtnModificar().addActionListener(r->{
-			try {
+		vista.getBtnModificar().addActionListener(r->{	
+			try {				
+				if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
+					albumDAO.addAlbum(new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText()));
+				
+				if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0){
+					artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
+				}		
+				
 				CancionDTO posibleCancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
 				vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+				
 				if (!cancionRepetida(posibleCancion, false))
-					modificarCancionDesdeBoton(posibleCancion);
+					modificarCancionDesdeBoton(posibleCancion);								
 
 			} catch (InvalidYearException y) {
 				JOptionPane.showMessageDialog(vista.getFrame(), "Introduzca un año válido", "Datos Incorrectos", JOptionPane.INFORMATION_MESSAGE);
@@ -218,14 +188,16 @@ public class Controlador {
 		});
 		
 		vista.getBtnBorrarCampo().addActionListener(r->{
+			botonEliminar = true;
 			//Compruebo si el campo a borrar es resultado de una búsqueda o del listado global
 			if (listaResultado != null && listaResultado.size() > 0){
 				borrarCancion(listaResultado);
 			}		
 			else
-				borrarCancion(PlayList.getListaCanciones());
+				borrarCancion(PlayList.getListaCanciones());			
 		});
 		
+		//limpio el formulario tras la eliminación
 		vista.getBtnLimpiarFormulario().addActionListener(r->{
 			vista.getTextAreaNombre().setText("");
 			vista.getTextAreaArtista().setText("");
@@ -236,10 +208,17 @@ public class Controlador {
 			vista.getTextAreaNumero().setText("");
 		});
 
-		
+		//evento que controla los cambios en el modelo de la tabla
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
-			if (antiguoIndice != -1){	
+			if (antiguoIndice != -1 && (!botonEliminar)){	
 				try {
+					if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
+						albumDAO.addAlbum(new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText()));
+					
+					if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0){
+						artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
+					}		
+					
 					CancionDTO posibleCancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
 					vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
 				
@@ -250,7 +229,13 @@ public class Controlador {
 					//e.printStackTrace();
 				}
 			}
-			antiguoIndice = vista.getTabla().getSelectedRow();
+			else 
+				botonEliminar = false;
+			
+			//método que rellena los campos del formulario y la barra de estado
+			rellenarFormulario();
+			
+			antiguoIndice = vista.getTabla().getSelectedRow();		
 		});		
 		
 		vista.getMntmExportarPdf().addActionListener(r->{
@@ -321,7 +306,8 @@ public class Controlador {
 
 		//Comprobamos si la canción está repetida o que se esté accediendo a este método mediante el evento de un botón
 		// Si no está repetida, añadiremos la canción a la lista
-		if (!(cancionRepetida(cancion, false))){
+		if ((!(cancionRepetida(cancion, false)))){
+			cancionDAO.addCancion(cancion);
 			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 			listaResultado = PlayList.getListaCanciones();
 			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "Canción guardada correctamente", JOptionPane.INFORMATION_MESSAGE);
@@ -352,21 +338,77 @@ public class Controlador {
 		if (result == JOptionPane.YES_OPTION){
 			if (listaResultado != null && listaResultado.size() > 0){
 				CancionDTO cancionAModificar = listaResultado.get(antiguoIndice);
+				cancionDAO.modificarCancion(posibleCancion, cancionAModificar);
 				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
 				PlayList.getListaCanciones().set(indice, posibleCancion);				
-				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);				
 			}
 			else{
+				cancionDAO.modificarCancion(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
 				PlayList.getListaCanciones().set(antiguoIndice, posibleCancion);
-				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
-			}		
-			
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);							
+			}					
 			listaResultado = PlayList.getListaCanciones();
 			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
 		}
-		else
+		else{
 			PlayList.getListaCanciones().remove(posibleCancion);
+		}
+	}
+	
+	private void rellenarFormulario() {
+		numeroRegistro = vista.getTabla().getSelectedRow();				
+		String[] campos = new String[7];
+		for (int i = 0; i < 7; i++) {
+			if (numeroRegistro != -1)
+				campos[i] = (String) vista.getTabla().getModel().getValueAt(numeroRegistro, i);
+		}
+		vista.getTextAreaNombre().setText(campos[0]);
+		vista.getTextAreaAlbum().setText(campos[1]);
+		vista.getTextAreaArtista().setText(campos[2]);
+		vista.getTextAreaAnio().setText(campos[3]);
+		vista.getTextAreaGenero().setText(campos[4]);
+		if (campos[5] != null)
+			campos[5] = campos[5].replace(" ms", "");
+		vista.getTextAreaDuracion().setText(campos[5]);
+		vista.getTextAreaNumero().setText(campos[6]);
+		
+		String artistaActual="";
+		String artistaElegido = vista.getTextAreaArtista().getText();
+
+		if (!artistaElegido.equals(artistaActual)){
+			artistaActual = artistaElegido;
+	        String url;
+			switch (vista.getTextAreaArtista().getText()){
+				case "Nirvana":
+					url = "resources/nirvana.jpg";
+					break;
+				case "Pink Floyd":
+					url = "resources/pink_floyd.jpg";
+					break;
+				case "Dire Straits":
+					url = "resources/dire_straits.jpeg";
+					break;
+				case "AC/DC":
+					url = "resources/ac_dc.jpeg";
+					break;
+				case "Queen":
+					url = "resources/queen.jpg";
+					break;
+				case "Muse":
+					url = "resources/muse.jpg";
+					break;
+				default:
+					url = "resources/no_image.jpg";	
+			}
+			vista.getJLabelImagen().setIcon(new ImageIcon(url));
+		}
+		
+		if (!busquedaRealidada)
+			vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+PlayList.getListaCanciones().size());
+		else
+			vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+listaResultado.size());		
 	}
 	
 	private void modificarCancionDesdeBoton(CancionDTO posibleCancion){
@@ -377,12 +419,15 @@ public class Controlador {
 				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
 				PlayList.getListaCanciones().set(indice, posibleCancion);				
 				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+				//albumDAO.ModificarAlbum(posibleCancion, cancionAModificar);
+				cancionDAO.modificarCancion(posibleCancion, cancionAModificar);
 			}
 			else{
+				//albumDAO.ModificarAlbum(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
+				cancionDAO.modificarCancion(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
 				PlayList.getListaCanciones().set(vista.getTabla().getSelectedRow(), posibleCancion);
-				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
-			}		
-			
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);						
+			}					
 			listaResultado = PlayList.getListaCanciones();
 			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
 			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
@@ -391,7 +436,6 @@ public class Controlador {
 			PlayList.getListaCanciones().remove(posibleCancion);
 	}
 	
-	
 	private void borrarCancion(List<CancionDTO> lista) {
 		if (vista.getTabla().getSelectedRow() != -1){
 			CancionDTO cancionEliminar = null;
@@ -399,9 +443,10 @@ public class Controlador {
 			+(lista.get(vista.getTabla().getSelectedRow())).getNombreCancion()+" ?", "Aviso", JOptionPane.YES_NO_OPTION);
 			
 			if (result == JOptionPane.YES_OPTION){
-				cancionEliminar =(CancionDTO) lista.get(vista.getTabla().getSelectedRow());
-				lista.remove(cancionEliminar);
+				cancionEliminar = lista.get(vista.getTabla().getSelectedRow());
+				lista.remove(cancionEliminar);			
 				vista.getTabla().setModel(new MiTableModel(lista, CABEZERA));
+				cancionDAO.borrarCancion(cancionEliminar);
 			}
 			
 			//Vamos a comprobar si la canción borrada es resultado de una búsqueda, en ese caso la eliminaremos tambíen de la lista general		
@@ -410,10 +455,11 @@ public class Controlador {
 
 					if (cancionEliminar.equals(cancion)){
 						PlayList.getListaCanciones().remove(cancion);
+						
 						break;
 					}
 				}
-			}			
+			}
 		}
 	}
 	//Método que modifica el JTable según un critero de búsqueda.

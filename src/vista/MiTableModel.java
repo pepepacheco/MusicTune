@@ -1,4 +1,4 @@
-package controlador;
+package vista;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import modelo.CancionDTO;
  * @version 1.0
  */
 
-class MiTableModel extends AbstractTableModel {
+public class MiTableModel extends AbstractTableModel {
 
 	private String[] cabezera; //cabezera de la tabla
 	private String[][] table; //Array Bidimensional que va a contener los datos del JTable.

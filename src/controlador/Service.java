@@ -122,4 +122,43 @@ public final class Service {
 		}
     	return true;
     }
+    
+    public static int contarFilas(String tabla, String nombre) {
+    	String sql = "SELECT COUNT(*) FROM "+tabla+" WHERE nombre = ? ";
+    	try {
+    		sentenciaPreparada = conexion.prepareStatement(sql);
+			sentenciaPreparada.setString(1, nombre);		
+			resultado = sentenciaPreparada.executeQuery();
+			return resultado.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;	
+		}
+    }
+    
+    public static void createTrigger() {
+		String sqlHistorial = "CREATE TABLE IF NOT EXISTS HISTORIAL("
+				+ "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "NOMBRE TEXT,"
+				+ "FECHABORRADO DATE);";
+		String sqlTrigger= "CREATE TRIGGER IF NOT EXISTS BORRADO "
+				+ "AFTER DELETE ON CANCION FOR EACH ROW "
+				+ "BEGIN "
+				+ "INSERT INTO HISTORIAL VALUES (null, old.NOMBRE, date('now'));"
+				+ "END";
+		try {
+			sentencia = conexion.createStatement();
+			sentencia.addBatch(sqlHistorial);
+			sentencia.addBatch(sqlTrigger);
+			sentencia.executeBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+    }
 }

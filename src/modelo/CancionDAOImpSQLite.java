@@ -13,7 +13,6 @@ public class CancionDAOImpSQLite implements CancionDAO {
 	private static PreparedStatement sentenciaPreparada;
 	private static Statement sentencia;
 	
-	
 	@Override
 	public boolean crearTabla() {
 		String sqlDelete = "DROP TABLE IF EXISTS cancion";
@@ -39,8 +38,8 @@ public class CancionDAOImpSQLite implements CancionDAO {
 	}
 
 	@Override
-	public boolean ModificarCancion(CancionDTO cancionNueva, CancionDTO cancionAntigua) {
-		String sql = "UPDATE cancion SET"
+	public boolean modificarCancion(CancionDTO cancionNueva, CancionDTO cancionAntigua) {
+		String sql = "UPDATE cancion SET "
 				+ "nombre=?, album=?, artista=?, genero=?, duracion=?, numero=?"
 				+ " where nombre=?;";		
 		try {
@@ -54,7 +53,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			sentenciaPreparada.setString(7, cancionAntigua.getNombreCancion());
 			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -87,8 +86,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 				sentencia.executeUpdate(sql);
 			} catch (SQLException e) {
 				//e.printStackTrace();
-				return false;
-				
+				return false;				
 			}
 		}	
 		return true;
@@ -100,6 +98,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		try {
 			sentenciaPreparada = conexion.prepareStatement(sql);
 			sentenciaPreparada.setString(1, c.getNombreCancion());
+			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;

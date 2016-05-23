@@ -20,5 +20,4 @@ public class Trigger {
 		sentencia.addBatch(sql2);
 		sentencia.executeBatch();
 	}
-
 }

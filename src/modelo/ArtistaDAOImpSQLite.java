@@ -15,14 +15,14 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 	public boolean crearTalba() {
 		String sqlDelete = "DROP TABLE IF EXISTS artista";
 		String sql = "CREATE TABLE artista ("
-				+ "id INTEGER ,"
-				+ " nombre TEXT PRIMARY KEY);";
+				+ "id INTEGER PRIMARY KEY AUTOINCREMENT ,"
+				+ " nombre TEXT UNIQUE);";
 		try {
 			sentencia = conexion.createStatement();
 			sentencia.executeUpdate(sqlDelete);
 			sentencia.executeUpdate(sql);
 		} catch (SQLException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		}	
 		return true;
@@ -77,6 +77,7 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 		try {
 			sentenciaPreparada = conexion.prepareStatement(sql);
 			sentenciaPreparada.setString(1, a.getNombreArtista());
+			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
