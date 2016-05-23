@@ -90,7 +90,7 @@ public class Controlador {
 		        	albumDAO.crearTalba();
 		        	albumDAO.addAlbum(PlayList.getListaAlbumes());
 		        	cancionDAO = new CancionDAOImpSQLite();
-		        	cancionDAO.crearTalba();
+		        	cancionDAO.crearTabla();
 		        	cancionDAO.addCancion(PlayList.getListaCanciones());
 		        	Service.crearVista();
 					vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));

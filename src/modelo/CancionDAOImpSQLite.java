@@ -15,7 +15,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 	
 	
 	@Override
-	public boolean crearTalba() {
+	public boolean crearTabla() {
 		String sqlDelete = "DROP TABLE IF EXISTS cancion";
 		String sql = "CREATE TABLE cancion ("
 				+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -52,7 +52,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			sentenciaPreparada.setInt(5, cancionNueva.getDuracion());
 			sentenciaPreparada.setInt(6, cancionNueva.getNumeroCancion());
 			sentenciaPreparada.setString(7, cancionAntigua.getNombreCancion());
-			sentenciaPreparada.executeUpdate(sql);
+			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
