@@ -98,6 +98,12 @@ public final class Service {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -119,6 +125,12 @@ public final class Service {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
     	return true;
     }
@@ -133,6 +145,12 @@ public final class Service {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return 0;	
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
     }
     

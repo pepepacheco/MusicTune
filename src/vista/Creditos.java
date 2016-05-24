@@ -2,12 +2,9 @@ package vista;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;

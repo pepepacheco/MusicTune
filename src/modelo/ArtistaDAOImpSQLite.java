@@ -24,6 +24,12 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 		return true;
 	}
@@ -38,6 +44,12 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 		} catch (SQLException e) {
 			return false;
 			//e.printStackTrace();
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -52,6 +64,12 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 			} catch (SQLException e) {
 				//e.printStackTrace();
 				return false;
+			} finally {
+				try {
+					sentencia.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		return true;
 	}
@@ -66,6 +84,12 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 			} catch (SQLException e) {
 				//e.printStackTrace();
 				return false;
+			} finally {
+				try {
+					sentencia.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return true;
@@ -81,6 +105,12 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}

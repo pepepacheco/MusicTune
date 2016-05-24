@@ -478,11 +478,5 @@ public class VistaGeneral {
 
 	public JMenuItem getMntmCreditos() {
 		return mntmAcercaDe;
-	}
-	
-	
-
-	
-	
-	
+	}	
 }

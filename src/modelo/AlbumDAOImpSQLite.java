@@ -25,6 +25,12 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 		return true;
 	}
@@ -42,6 +48,12 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -56,6 +68,12 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			} catch (SQLException e) {
 				//e.printStackTrace();
 				return false;
+			} finally {
+				try {
+					sentencia.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		return true;
 	}
@@ -70,6 +88,12 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 				} catch (SQLException e) {
 					//e.printStackTrace();
 					return false;
+				} finally {
+					try {
+						sentencia.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 		}
 		return true;
@@ -77,8 +101,22 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 	
 	@Override
 	public boolean borrarAlbum(AlbumDTO al) {
-		// TODO Auto-generated method stub
-		return false;
+		String sql = "DELETE FROM album WHERE nombre = ? ;";
+		try {
+			sentenciaPreparada = conexion.prepareStatement(sql);
+			sentenciaPreparada.setString(1, al.getNombreAlbum());
+			sentenciaPreparada.executeUpdate();
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
 	}
 
 }

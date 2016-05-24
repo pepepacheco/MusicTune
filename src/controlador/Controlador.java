@@ -38,46 +38,27 @@ import vista.MiTableModel;
 
 public class Controlador {
 	private VistaGeneral vista;
-	private List<CancionDTO> listaResultado;
-	private int numeroRegistro;
-	private boolean busquedaRealidada = false;
-	private boolean botonEliminar = false;
-	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
-	private int antiguoIndice = -1;
 	private CancionDAOImpSQLite cancionDAO;
 	private ArtistaDAOImpSQLite artistaDAO;
 	private AlbumDAOImpSQLite albumDAO;
+	private List<CancionDTO> listaResultado; //lista dinámica que almacena los resultados de una búsqueda en el JTable
+	private boolean busquedaRealidada = false; //variable booleana que determina si se ha realizado una búsqueda en el JTable
+	private boolean botonEliminar = false; //variable booleana que determina si se está entrando a un método desde un botón
+	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
+	private int antiguoIndice = -1; //variable que va almacenando el indice anterior en el JTable
 	
-	//Pasamos una referencia de la vista para acceder a sus Clases.
+	
 	public Controlador(VistaGeneral v){
-		vista = v;
+		vista = v; //Pasamos una referencia de la vista para acceder a sus Clases.
     	artistaDAO = new ArtistaDAOImpSQLite();
     	albumDAO = new AlbumDAOImpSQLite();
     	cancionDAO = new CancionDAOImpSQLite();
-		eventos();
-		loadBD();
-		
-	}
-	private void loadBD() {
-		File bd = new File("database.db");
-		if (bd.exists() && bd.length() > 4000){
-			try {
-				Service.autoLoad();
-				vista.getAbrir().setEnabled(false);
-			} catch (InvalidYearException e) {
-				//e.printStackTrace();
-			} catch (InvalidDurationException e) {
-				//e.printStackTrace();
-			} catch (InvalidTackNumberException e) {
-				//e.printStackTrace();
-			} catch (EmptyFieldsException e) {
-				//e.printStackTrace();
-			}
-			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));			
-		}
+		eventos(); //inicializamos los eventos
+		loadBD(); // inicializamos la base de datos		
 	}
 	
-	//Método donde se van a manejar todos los eventos.
+	//================================EVENTOS INTERFAZ GRÁFICA================================
+	
 	private void eventos(){
 		
 		vista.getAbrir().addActionListener(r->{
@@ -110,7 +91,6 @@ public class Controlador {
 		vista.getSalir().addActionListener(r->{
 			System.exit(0);
 		});
-
 		
 		vista.getTextAreaBuscar().addKeyListener(new KeyAdapter() {
 			@Override
@@ -125,9 +105,7 @@ public class Controlador {
 		vista.getBtnMostrarResultado().addActionListener(r->{
 			if (PlayList.getListaCanciones().size() > 0)
 				buscarPorCategoria();
-		});
-		
-		
+		});		
 		
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
 
@@ -210,36 +188,19 @@ public class Controlador {
 
 		//evento que controla los cambios en el modelo de la tabla
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
-			if (antiguoIndice != -1 && (!botonEliminar)){	
-				try {
-					if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
-						albumDAO.addAlbum(new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText()));
-					
-					if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0){
-						artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
-					}		
-					
-					CancionDTO posibleCancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
-					vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
-				
-					if (!(cancionRepetida(posibleCancion, true))){
-						modificarCancion(posibleCancion);
-					}				
-				} catch (Exception e) {
-					//e.printStackTrace();
-				}
-			}
+			if (antiguoIndice != -1 && (!botonEliminar))
+				descartarCambios();
 			else 
 				botonEliminar = false;
 			
-			//método que rellena los campos del formulario y la barra de estado
 			rellenarFormulario();
+			cambiarImagen();
+			actualizarBarraEstado();
 			
 			antiguoIndice = vista.getTabla().getSelectedRow();		
 		});		
 		
-		vista.getMntmExportarPdf().addActionListener(r->{
-			
+		vista.getMntmExportarPdf().addActionListener(r->{			
 			Document documento = new Document();	
 			try {
 				if (vista.getFile().showSaveDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
@@ -280,12 +241,37 @@ public class Controlador {
 			cr.setVisible(true);
 		});
 	}
-
+	
+	//================================MÉTODOS AUXILIARES================================
+	
+	//método que carga la base de datos, si existe
+	private void loadBD() {
+		File bd = new File("database.db");
+		if (bd.exists() && bd.length() > 4000){
+			try {
+				Service.autoLoad();
+				vista.getAbrir().setEnabled(false);
+			} catch (InvalidYearException e) {
+				//e.printStackTrace();
+			} catch (InvalidDurationException e) {
+				//e.printStackTrace();
+			} catch (InvalidTackNumberException e) {
+				//e.printStackTrace();
+			} catch (EmptyFieldsException e) {
+				//e.printStackTrace();
+			}
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));			
+		}
+	}
+	
+	//método que añade una canción, siempre y cuando el contenido sea correcto
+	//y no esté repetida
 	private void addCancion() {
 		CancionDTO cancion = null;
 		try {
-			cancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
-					vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+			cancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(),
+			vista.getTextAreaArtista().getText(), vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(),
+			vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
 			
 			new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText());
 			new ArtistaDTO(vista.getTextAreaArtista().getText());
@@ -314,6 +300,7 @@ public class Controlador {
 		}
 	}
 	
+	//método que comprueba si una canción está repetida en la lista
 	private boolean cancionRepetida(CancionDTO cancion, boolean formulario){
 		if (cancion != null){
 			for (int i = 0; i < PlayList.getListaCanciones().size()-1; i++) {
@@ -333,6 +320,7 @@ public class Controlador {
 		return false;
 	}
 	
+	//método para modificaciones en los registros
 	private void modificarCancion(CancionDTO posibleCancion){
 		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar el registro anterior");
 		if (result == JOptionPane.YES_OPTION){
@@ -357,12 +345,12 @@ public class Controlador {
 		}
 	}
 	
+	//pamamos los datos del JTable al formulario
 	private void rellenarFormulario() {
-		numeroRegistro = vista.getTabla().getSelectedRow();				
 		String[] campos = new String[7];
 		for (int i = 0; i < 7; i++) {
-			if (numeroRegistro != -1)
-				campos[i] = (String) vista.getTabla().getModel().getValueAt(numeroRegistro, i);
+			if (vista.getTabla().getSelectedRow() != -1)
+				campos[i] = (String) vista.getTabla().getModel().getValueAt(vista.getTabla().getSelectedRow(), i);
 		}
 		vista.getTextAreaNombre().setText(campos[0]);
 		vista.getTextAreaAlbum().setText(campos[1]);
@@ -373,10 +361,39 @@ public class Controlador {
 			campos[5] = campos[5].replace(" ms", "");
 		vista.getTextAreaDuracion().setText(campos[5]);
 		vista.getTextAreaNumero().setText(campos[6]);
-		
+	
+	}
+	//método que modifica las canciones desde el evento de un boton, no del JTable
+	private void modificarCancionDesdeBoton(CancionDTO posibleCancion){
+		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar este registro");
+		if (result == JOptionPane.YES_OPTION){
+			if (listaResultado != null && listaResultado.size() > 0){
+				CancionDTO cancionAModificar = listaResultado.get(vista.getTabla().getSelectedRow());
+				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
+				PlayList.getListaCanciones().set(indice, posibleCancion);				
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
+				cancionDAO.modificarCancion(posibleCancion, cancionAModificar);
+			}
+			else{
+				cancionDAO.modificarCancion(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
+				PlayList.getListaCanciones().set(vista.getTabla().getSelectedRow(), posibleCancion);
+				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);						
+			}					
+			listaResultado = PlayList.getListaCanciones();
+			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
+			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
+		}
+		else
+			PlayList.getListaCanciones().remove(posibleCancion);
+	}
+	
+	//método que va a cambiar nuestra carátula en función del artista
+	private void cambiarImagen() {
 		String artistaActual="";
 		String artistaElegido = vista.getTextAreaArtista().getText();
-
+	
+		//Comprobamos si el registro siguiente contiene un artista diferente,
+		//en ese caso, modificaremos su imágen.
 		if (!artistaElegido.equals(artistaActual)){
 			artistaActual = artistaElegido;
 	        String url;
@@ -403,39 +420,41 @@ public class Controlador {
 					url = "resources/no_image.jpg";	
 			}
 			vista.getJLabelImagen().setIcon(new ImageIcon(url));
-		}
-		
+		}		
+	}
+	
+	//Actualizamos la barra de estado, ya sea desde el resultado de una búsqueda
+	// o de la lista global.	
+	private void actualizarBarraEstado() {
+
 		if (!busquedaRealidada)
-			vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+PlayList.getListaCanciones().size());
+			vista.getLblRegistro().setText("Registro "+(vista.getTabla().getSelectedRow()+1)+" de "+PlayList.getListaCanciones().size());
 		else
-			vista.getLblRegistro().setText("Registro "+(numeroRegistro+1)+" de "+listaResultado.size());		
+			vista.getLblRegistro().setText("Registro "+(vista.getTabla().getSelectedRow()+1)+" de "+listaResultado.size());
 	}
 	
-	private void modificarCancionDesdeBoton(CancionDTO posibleCancion){
-		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar este registro");
-		if (result == JOptionPane.YES_OPTION){
-			if (listaResultado != null && listaResultado.size() > 0){
-				CancionDTO cancionAModificar = listaResultado.get(vista.getTabla().getSelectedRow());
-				int indice = PlayList.getListaCanciones().indexOf(cancionAModificar);
-				PlayList.getListaCanciones().set(indice, posibleCancion);				
-				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);
-				//albumDAO.ModificarAlbum(posibleCancion, cancionAModificar);
-				cancionDAO.modificarCancion(posibleCancion, cancionAModificar);
-			}
-			else{
-				//albumDAO.ModificarAlbum(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
-				cancionDAO.modificarCancion(posibleCancion, PlayList.getListaCanciones().get(antiguoIndice));
-				PlayList.getListaCanciones().set(vista.getTabla().getSelectedRow(), posibleCancion);
-				PlayList.getListaCanciones().remove(PlayList.getListaCanciones().size()-1);						
-			}					
-			listaResultado = PlayList.getListaCanciones();
-			vista.getTabla().setModel(new MiTableModel(PlayList.getListaCanciones(), CABEZERA));
-			JOptionPane.showMessageDialog(vista.getFrame(), "Pulse aceptar para continuar", "registro modificado correctamente", JOptionPane.INFORMATION_MESSAGE);
+	//Método que muestra un mensaje al usuario en el caso de que el formulario haya recibido cambios
+	private void descartarCambios() {
+		try {
+			if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
+				albumDAO.addAlbum(new AlbumDTO(vista.getTextAreaAlbum().getText(), vista.getTextAreaAnio().getText()));
+			
+			if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0){
+				artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
+			}		
+			
+			CancionDTO posibleCancion = new CancionDTO(vista.getTextAreaNombre().getText(), vista.getTextAreaAlbum().getText(), vista.getTextAreaArtista().getText(),
+			vista.getTextAreaAnio().getText(), vista.getTextAreaGenero().getText(), vista.getTextAreaDuracion().getText(), vista.getTextAreaNumero().getText());
+		
+			if (!(cancionRepetida(posibleCancion, true))){
+				modificarCancion(posibleCancion);
+			}				
+		} catch (Exception e) {
+			//e.printStackTrace();
 		}
-		else
-			PlayList.getListaCanciones().remove(posibleCancion);
 	}
 	
+	//método para el borrado de canciones
 	private void borrarCancion(List<CancionDTO> lista) {
 		if (vista.getTabla().getSelectedRow() != -1){
 			CancionDTO cancionEliminar = null;
@@ -449,7 +468,8 @@ public class Controlador {
 				cancionDAO.borrarCancion(cancionEliminar);
 			}
 			
-			//Vamos a comprobar si la canción borrada es resultado de una búsqueda, en ese caso la eliminaremos tambíen de la lista general		
+			//Vamos a comprobar si la canción borrada es resultado de una búsqueda,
+			//en ese caso la eliminaremos tambíen de la lista general		
 			if (cancionEliminar != null){
 				for (CancionDTO cancion : PlayList.getListaCanciones()) {
 
@@ -462,6 +482,7 @@ public class Controlador {
 			}
 		}
 	}
+	
 	//Método que modifica el JTable según un critero de búsqueda.
 	private  void buscarPorCategoria(){
 		listaResultado = new ArrayList<CancionDTO>();
@@ -477,7 +498,7 @@ public class Controlador {
 				busquedaRealidada = true;
 				break;
 				
-			case "\u00C1lbum":
+			case "Álbum":
 				
 				listaResultado = CancionDTO.BuscarCancion(PlayList.getListaCanciones(), p->{
 				return p.getNombreAlbum().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
@@ -495,7 +516,7 @@ public class Controlador {
 				busquedaRealidada = true;
 				break;
 				
-			case "A\u00F1o":
+			case "Año":
 				
 				listaResultado = CancionDTO.BuscarCancion(PlayList.getListaCanciones(), p->{
 				return (p.getYearAlbum()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());
@@ -504,7 +525,7 @@ public class Controlador {
 				busquedaRealidada = true;
 				break;
 				
-			case "G\u00E9nero":
+			case "Género":
 				
 				listaResultado = CancionDTO.BuscarCancion(PlayList.getListaCanciones(), p->{
 				return p.getGenero().toLowerCase().contains(vista.getTextAreaBuscar().getText().toLowerCase());
@@ -513,7 +534,7 @@ public class Controlador {
 				busquedaRealidada = true;
 				break;
 				
-			case "N\u00FAmero":
+			case "Número":
 				
 				listaResultado = CancionDTO.BuscarCancion(PlayList.getListaCanciones(), p->{
 				return (p.getNumeroCancion()+"").toLowerCase().equals(vista.getTextAreaBuscar().getText().toLowerCase());

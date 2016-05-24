@@ -33,6 +33,12 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}	
 		return true;
 	}
@@ -55,6 +61,12 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -71,6 +83,12 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
@@ -87,6 +105,12 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			} catch (SQLException e) {
 				//e.printStackTrace();
 				return false;				
+			} finally {
+				try {
+					sentencia.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}	
 		return true;
@@ -102,6 +126,12 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
