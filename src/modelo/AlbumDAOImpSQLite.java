@@ -29,7 +29,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}	
 		return true;
@@ -46,13 +46,13 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			sentenciaPreparada.setString(2, albumAntiguo.getNombreAlbum());
 			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		} finally {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;
@@ -72,7 +72,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 				try {
 					sentencia.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		return true;
@@ -92,7 +92,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 					try {
 						sentencia.close();
 					} catch (SQLException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 					}
 				}
 		}
@@ -113,7 +113,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;

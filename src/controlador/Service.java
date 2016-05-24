@@ -85,7 +85,6 @@ public final class Service {
     }
     
 	public static boolean crearVista() {
-		//String sqlDelete = "DROP VIEW IF EXISTS carga_datos;";
 		String sql = "create view carga_datos as"
 					+ " select cancion.nombre, album.nombre, artista.nombre, album.year, cancion.genero, cancion.duracion, cancion.numero"
 					+ " from artista, album, cancion"
@@ -93,7 +92,6 @@ public final class Service {
 		
 		try {
 			sentencia = conexion.createStatement();
-			//sentencia.executeQuery(sqlDelete);
 			sentencia.execute(sql);		
 		} catch (SQLException e) {
 			//e.printStackTrace();
@@ -102,7 +100,7 @@ public final class Service {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;
@@ -129,7 +127,7 @@ public final class Service {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
     	return true;
@@ -143,13 +141,13 @@ public final class Service {
 			resultado = sentenciaPreparada.executeQuery();
 			return resultado.getInt(1);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return 0;	
 		} finally {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
     }
@@ -170,12 +168,12 @@ public final class Service {
 			sentencia.addBatch(sqlTrigger);
 			sentencia.executeBatch();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		} finally {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
     }

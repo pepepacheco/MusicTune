@@ -37,7 +37,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}	
 		return true;
@@ -59,13 +59,13 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			sentenciaPreparada.setString(7, cancionAntigua.getNombreCancion());
 			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return false;
 		} finally {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;
@@ -87,7 +87,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;
@@ -109,7 +109,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 				try {
 					sentencia.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}	
@@ -130,7 +130,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			try {
 				sentencia.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 		}
 		return true;
