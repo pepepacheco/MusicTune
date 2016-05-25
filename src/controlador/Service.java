@@ -192,4 +192,21 @@ public final class Service {
 			}
 		}
     }
+    
+    public static void crearIndice() {
+    	String sql = "CREATE INDEX CANCION_NOMBRE "
+    			+ "ON cancion(nombre); ";
+    	try {
+			sentencia = conexion.createStatement();
+			sentencia.executeUpdate(sql);
+		} catch (SQLException e) {
+			//e.printStackTrace();
+		} finally {
+			try {
+				sentencia.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+    }
 }

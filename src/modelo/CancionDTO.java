@@ -140,7 +140,7 @@ public final class CancionDTO {
 
     @Override
     public String toString() {
-        return "Nombre: "+nombreCancion+" Álbum: "+getNombreAlbum()+" Artista: "+getNombreArtista()
+        return "Nombre: "+nombreCancion+" Album: "+getNombreAlbum()+" Artista: "+getNombreArtista()
                 +" Año: "+yearAlbum+" Género: "+genero+" Duración: "+(duracion/1000)+
                 "seg. Numero en Disco: "+numeroCancion+"\n";                
     }
