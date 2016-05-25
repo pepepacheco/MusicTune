@@ -165,7 +165,7 @@ public class VistaGeneral {
 						
 						lblBuscar = new JLabel("Buscar por:");						
 						comboBox = new JComboBox<String>();
-						comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Nombre", "\u00C1lbum", "Artista", "A\u00F1o", "G\u00E9nero", "N\u00FAmero"}));					
+						comboBox.setModel(new DefaultComboBoxModel(new String[] {"Nombre", "Álbum", "Artista", "Año", "Género", "Número"}));					
 						textFieldBuscar = new JTextField();						
 						btnIrMostrarResultado = new JButton("Mostrar resultado");
 						frame.getContentPane().setLayout(new BorderLayout(0, 0));						
