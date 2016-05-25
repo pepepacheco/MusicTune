@@ -400,27 +400,27 @@ public class Controlador {
 	        String url;
 			switch (vista.getTextAreaArtista().getText()){
 				case "Nirvana":
-					url = "resources/nirvana.jpg";
+					url = "/nirvana.jpg";
 					break;
 				case "Pink Floyd":
-					url = "resources/pink_floyd.jpg";
+					url = "/pink_floyd.jpg";
 					break;
 				case "Dire Straits":
-					url = "resources/dire_straits.jpeg";
+					url = "/dire_straits.jpeg";
 					break;
 				case "AC/DC":
-					url = "resources/ac_dc.jpeg";
+					url = "/ac_dc.jpeg";
 					break;
 				case "Queen":
-					url = "resources/queen.jpg";
+					url = "/queen.jpg";
 					break;
 				case "Muse":
-					url = "resources/muse.jpg";
+					url = "/muse.jpg";
 					break;
 				default:
-					url = "resources/no_image.jpg";	
+					url = "/no_image.jpg";	
 			}
-			vista.getJLabelImagen().setIcon(new ImageIcon(url));
+			vista.getJLabelImagen().setIcon(new ImageIcon(Main.class.getResource(url)));
 		}		
 	}
 	
