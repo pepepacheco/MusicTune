@@ -55,23 +55,16 @@ public class MiTableModel extends AbstractTableModel {
 				campos.clear();		
 		}
 	}
-	/**
-	 * return int número de columnas.
-	 */
 	@Override
 	public int getColumnCount() {
 		return cabezera.length;
 	}
-	/**
-	 * return int número de filas.
-	 */
+
 	@Override
 	public int getRowCount() {
 		return table.length;
 	}
-	/**
-	 * return Object valor x e y de la matriz.
-	 */
+
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		return table[rowIndex][columnIndex];
@@ -79,7 +72,6 @@ public class MiTableModel extends AbstractTableModel {
 	
 	@Override
 	public String getColumnName(int column) {
-		// TODO Auto-generated method stub
 		return cabezera[column];
 	}
 	

@@ -31,11 +31,6 @@ import vista.Creditos;
 import vista.VistaGeneral;
 import vista.MiTableModel;
 
-/**
- * @author Rafael Vargas del Moral
- * @version 1.0
- */
-
 public class Controlador {
 	private VistaGeneral vista;
 	private CancionDAOImpSQLite cancionDAO;
@@ -44,9 +39,8 @@ public class Controlador {
 	private List<CancionDTO> listaResultado; //lista dinámica que almacena los resultados de una búsqueda en el JTable
 	private boolean busquedaRealidada = false; //variable booleana que determina si se ha realizado una búsqueda en el JTable
 	private boolean botonEliminar = false; //variable booleana que determina si se está entrando a un método desde un botón
-	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"};
+	private final String[] CABEZERA = {"Nombre","Álbum","Artista","Año","Género","Duración", "Número"}; //Cabezera del TableModel
 	private int antiguoIndice = -1; //variable que va almacenando el indice anterior en el JTable
-	
 	
 	public Controlador(VistaGeneral v){
 		vista = v; //Pasamos una referencia de la vista para acceder a sus Clases.
@@ -61,6 +55,7 @@ public class Controlador {
 	
 	private void eventos(){
 		
+		//Evento del meńu abrir que al seleccionar un archivo JSON, lo carga en un JTable, crea las tablas e inserta los valores
 		vista.getAbrir().addActionListener(r->{
 	    	vista.getFile().setFileFilter(vista.getFiltro());	       	
 	        if (vista.getFile().showOpenDialog(vista.getFrame()) == JFileChooser.APPROVE_OPTION){
@@ -87,11 +82,13 @@ public class Controlador {
 				}				 
 	        }
 		});
-
+		
+		//Evento que al pulsar en el menú salir cierra la aplicación
 		vista.getSalir().addActionListener(r->{
 			System.exit(0);
 		});
 		
+		//Evento que realiza búsquedas si se pulsa la tecla "ENTER"
 		vista.getTextAreaBuscar().addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -102,26 +99,26 @@ public class Controlador {
 			}
 		});
 		
+		//Evento que realiza búsquedas si se pulsa sobre el boton "Mostrar resultado"
 		vista.getBtnMostrarResultado().addActionListener(r->{
 			if (PlayList.getListaCanciones().size() > 0)
 				buscarPorCategoria();
 		});		
 		
-		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
-
-		});
-		
+		//Evento que muestra la siguiete fila del TableModel
 		vista.getBtnSiguiente().addActionListener(r->{			
 			if (vista.getTabla().getSelectedRow() < (vista.getTabla().getRowCount()-1))
 				vista.getTabla().setRowSelectionInterval(vista.getTabla().getSelectedRow()+1, vista.getTabla().getSelectedRow()+1);
 			
 		});
 		
+		//Evento que muestra la fila anterior del TableModel
 		vista.getBtnAnterior().addActionListener(r->{			
 			if (vista.getTabla().getSelectedRow() > 0)
 				vista.getTabla().setRowSelectionInterval(vista.getTabla().getSelectedRow()-1, vista.getTabla().getSelectedRow()-1);
 		});
 		
+		//Evento que añade una nuevo campo al Jtable y lo inserta en la base de datos
 		vista.getBtnAnadirCampo().addActionListener(r->{
 			try{
 				if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
@@ -129,12 +126,14 @@ public class Controlador {
 				
 				if (Service.contarFilas("artista", vista.getTextAreaArtista().getText()) == 0)
 					artistaDAO.addArtista(new ArtistaDTO(vista.getTextAreaArtista().getText()));
+				
 				addCancion();
 			} catch (Exception e){
 				//e.printStackTrace();
 			}
 		});
 		
+		//Evento que modifica un campo en el Jtable y lo actualiza en la base de datos
 		vista.getBtnModificar().addActionListener(r->{	
 			try {				
 				if (Service.contarFilas("album", vista.getTextAreaAlbum().getText()) == 0)
@@ -165,6 +164,7 @@ public class Controlador {
 			}
 		});
 		
+		//Evento que al pulsar sobre el botón "Borrar", elimina el campo activo en el JTable y tambíen en la base de datos
 		vista.getBtnBorrarCampo().addActionListener(r->{
 			botonEliminar = true;
 			//Compruebo si el campo a borrar es resultado de una búsqueda o del listado global
@@ -175,7 +175,7 @@ public class Controlador {
 				borrarCancion(PlayList.getListaCanciones());			
 		});
 		
-		//limpio el formulario tras la eliminación
+		//Evento que limpia el formulario tras una eliminación
 		vista.getBtnLimpiarFormulario().addActionListener(r->{
 			vista.getTextAreaNombre().setText("");
 			vista.getTextAreaArtista().setText("");
@@ -186,7 +186,7 @@ public class Controlador {
 			vista.getTextAreaNumero().setText("");
 		});
 
-		//evento que controla los cambios en el modelo de la tabla
+		//Evento que controla los cambios en el TableModel
 		vista.getTabla().getSelectionModel().addListSelectionListener(r->{
 			if (antiguoIndice != -1 && (!botonEliminar))
 				descartarCambios();
@@ -200,6 +200,7 @@ public class Controlador {
 			antiguoIndice = vista.getTabla().getSelectedRow();		
 		});		
 		
+		//Evento que exporta un archivo PDF que contiene una tabla con los campos más siginificativos de cada registro
 		vista.getMntmExportarPdf().addActionListener(r->{			
 			Document documento = new Document();	
 			try {
@@ -235,6 +236,7 @@ public class Controlador {
 			} 
 		});
 		
+		//Evento que lanza un dialgo modál con información acerca de la aplicación y su creador.
 		vista.getMntmCreditos().addActionListener(r->{
 			Creditos cr = new Creditos();
 			cr.setLocationRelativeTo(vista.getFrame());
@@ -244,7 +246,7 @@ public class Controlador {
 	
 	//================================MÉTODOS AUXILIARES================================
 	
-	//método que carga la base de datos, si existe
+	//Método que carga la base de datos, si existe
 	private void loadBD() {
 		File bd = new File("database.db");
 		if (bd.exists() && bd.length() > 4000){
@@ -264,8 +266,7 @@ public class Controlador {
 		}
 	}
 	
-	//método que añade una canción, siempre y cuando el contenido sea correcto
-	//y no esté repetida
+	//Método que añade una canción, siempre y cuando el contenido sea correcto y esta no esté reptida.
 	private void addCancion() {
 		CancionDTO cancion = null;
 		try {
@@ -300,7 +301,7 @@ public class Controlador {
 		}
 	}
 	
-	//método que comprueba si una canción está repetida en la lista
+	//Método que comprueba si una canción está repetida en la lista
 	private boolean cancionRepetida(CancionDTO cancion, boolean formulario){
 		if (cancion != null){
 			for (int i = 0; i < PlayList.getListaCanciones().size()-1; i++) {
@@ -320,7 +321,7 @@ public class Controlador {
 		return false;
 	}
 	
-	//método para modificaciones en los registros
+	//Método que modifica un registro en el TableModel y en la base de datos
 	private void modificarCancion(CancionDTO posibleCancion){
 		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar el registro anterior");
 		if (result == JOptionPane.YES_OPTION){
@@ -345,7 +346,7 @@ public class Controlador {
 		}
 	}
 	
-	//pamamos los datos del JTable al formulario
+	//Método que rellena los campos de una fila del TableModel en el formulario
 	private void rellenarFormulario() {
 		String[] campos = new String[7];
 		for (int i = 0; i < 7; i++) {
@@ -363,7 +364,7 @@ public class Controlador {
 		vista.getTextAreaNumero().setText(campos[6]);
 	
 	}
-	//método que modifica las canciones desde el evento de un boton, no del JTable
+	//Método que modifica las canciones desde el evento de un boton, no del JTable
 	private void modificarCancionDesdeBoton(CancionDTO posibleCancion){
 		int result = JOptionPane.showConfirmDialog(vista.getFrame(), "¿Desea modificar este registro");
 		if (result == JOptionPane.YES_OPTION){
@@ -387,7 +388,7 @@ public class Controlador {
 			PlayList.getListaCanciones().remove(posibleCancion);
 	}
 	
-	//método que va a cambiar nuestra carátula en función del artista
+	//Método que nuestra una imagen de carátula en función del artista
 	private void cambiarImagen() {
 		String artistaActual="";
 		String artistaElegido = vista.getTextAreaArtista().getText();
@@ -423,8 +424,7 @@ public class Controlador {
 		}		
 	}
 	
-	//Actualizamos la barra de estado, ya sea desde el resultado de una búsqueda
-	// o de la lista global.	
+	//Método que actualiza la barra de estado, ya sea desde el resultado de una búsqueda o de la lista global.	
 	private void actualizarBarraEstado() {
 
 		if (!busquedaRealidada)
@@ -454,7 +454,7 @@ public class Controlador {
 		}
 	}
 	
-	//método para el borrado de canciones
+	//Método para el borrado de canciones
 	private void borrarCancion(List<CancionDTO> lista) {
 		if (vista.getTabla().getSelectedRow() != -1){
 			CancionDTO cancionEliminar = null;

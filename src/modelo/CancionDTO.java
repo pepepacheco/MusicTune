@@ -13,6 +13,7 @@ import java.util.Scanner;
  * @author Rafael Vargas Del Moral
  * @version 1.0
  */
+
 public final class CancionDTO {
     private String nombreCancion;
     private String nombreAlbum;
@@ -64,66 +65,57 @@ public final class CancionDTO {
         	throw new EmptyFieldsException();
         }
         
-        addCancion();
+        addCancion(); //Al crearse el objeto automaticamente se añade a una lista dinámica
     }
 
     //geters and setters
+    
+    /**
+     * @return nombreCancion
+     */
     public String getNombreCancion() {
         return nombreCancion;
     }
-     
+    /**
+     * @return nombreAlbum
+     */
+    
     public String getNombreAlbum() {
 		return nombreAlbum;
 	}
-
+    /**
+     * @return nombreArtista
+     */
 	public String getNombreArtista() {
 		return nombreArtista;
 	}
-
+	/**
+	 * @return yearAlbum
+	 */
 	public int getYearAlbum() {
 		return yearAlbum;
 	}
-
+	/**
+	 * @return genero
+	 */
     public String getGenero() {
         return genero;
     }
-
+    /**
+     * @return duracion
+     */
     public int getDuracion() {
         return duracion;
     }
-
+    /**
+     * @return numeroCancion
+     */
     public int getNumeroCancion() {
         return numeroCancion;  
     }
-    
-    public void setNombreCancion(String nombreCancion) {
-		this.nombreCancion = nombreCancion;
-	}
-
-	public void setNombreAlbum(String nombreAlbum) {
-		this.nombreAlbum = nombreAlbum;
-	}
-
-	public void setNombreArtista(String nombreArtista) {
-		this.nombreArtista = nombreArtista;
-	}
-
-	public void setYearAlbum(int yearAlbum) {
-		this.yearAlbum = yearAlbum;
-	}
-
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
-
-	public void setDuracion(int duracion) {
-		this.duracion = duracion;
-	}
-
-	public void setNumeroCancion(int numeroCancion) {
-		this.numeroCancion = numeroCancion;
-	}
-
+    /**
+     * @return true si la canción se añade correctamente a la lista
+     */
 	private boolean addCancion() {
     	return PlayList.getListaCanciones().add(this);
     }

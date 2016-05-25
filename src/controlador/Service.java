@@ -20,14 +20,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * @author Rafael Vargas del Moral
- * @version 1.0
- */
-
 public final class Service {
-	private static JsonReader reader;
-	private static Connection conexion = ConexionBD.getConexion();
+	private static JsonReader reader; 
+	private static Connection conexion = ConexionBD.getConexion(); //Conexion única
 	private static PreparedStatement sentenciaPreparada;
 	private static Statement sentencia;
 	private static ResultSet resultado;
@@ -43,7 +38,7 @@ public final class Service {
 	 */
     public static void loadJson(File file) throws FileNotFoundException, IOException, InvalidYearException,
     InvalidDurationException, InvalidTackNumberException, EmptyFieldsException{
-        reader = new JsonReader(new FileReader(file));
+    	reader = new JsonReader(new FileReader(file));
         reader.beginArray();
         String[] campo = new String[7];
         boolean comprobacion = false;
@@ -72,7 +67,8 @@ public final class Service {
                     comprobacion = false;
                     break;
                 }                        
-            }           
+            }
+            //Si no son nulos, creo los objetos
             if (comprobacion) {        
                 new CancionDTO(campo[0], campo[1], campo[2], campo[3], campo[4], campo[5], campo[6]);
                 new AlbumDTO(campo[1], campo[3]);
@@ -83,7 +79,10 @@ public final class Service {
         reader.endArray();
         //System.out.println(PlayList.getListaReproduccion());
     }
-    
+    /**
+     * Método que crea una vista para posteriormente hacer un AutoLoad
+     * @return void
+     */
 	public static boolean crearVista() {
 		String sql = "create view carga_datos as"
 					+ " select cancion.nombre, album.nombre, artista.nombre, album.year, cancion.genero, cancion.duracion, cancion.numero"
@@ -105,7 +104,14 @@ public final class Service {
 		}
 		return true;
 	}
-    
+    /**
+     * Método que crea los objetos a través de una vista creada en nuestra base de datos
+     * @return boolean devuelve true si los datos se han cargado correctamente
+     * @throws InvalidYearException
+     * @throws InvalidDurationException
+     * @throws InvalidTackNumberException
+     * @throws EmptyFieldsException
+     */
     public static boolean autoLoad() throws InvalidYearException, InvalidDurationException, InvalidTackNumberException, EmptyFieldsException {
     	String sql = "SELECT * FROM CARGA_DATOS;";   
     	try {
@@ -132,7 +138,12 @@ public final class Service {
 		}
     	return true;
     }
-    
+    /**
+     * 
+     * @param tabla
+     * @param nombre
+     * @return int numero de filas de una tabla sobre una condición
+     */
     public static int contarFilas(String tabla, String nombre) {
     	String sql = "SELECT COUNT(*) FROM "+tabla+" WHERE nombre = ? ";
     	try {
@@ -152,6 +163,10 @@ public final class Service {
 		}
     }
     
+    /**
+     * Método para crear un trigger que antes de borrar un campo, lo introduce en una tabla historial
+     * @return void
+     */
     public static void createTrigger() {
 		String sqlHistorial = "CREATE TABLE IF NOT EXISTS HISTORIAL("
 				+ "ID INTEGER PRIMARY KEY AUTOINCREMENT,"

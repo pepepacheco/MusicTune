@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Set;
 
 public class AlbumDAOImpSQLite implements AlbumDAO {
-	private Connection conexion = ConexionBD.getConexion();
+	private Connection conexion = ConexionBD.getConexion(); //conexión única
 	private static PreparedStatement sentenciaPreparada;
 	private static Statement sentencia;
 
@@ -50,7 +50,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			return false;
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}
@@ -78,6 +78,11 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 		return true;
 	}
 	
+	/**
+	 * Método que añade a la base de datos todas las canciones desde una lista dinámica 
+	 * @param lista
+	 * @return true si los albumes han sido añadidos correctamente
+	 */
 	public boolean addAlbum(Set<AlbumDTO> lista) {
 		for (AlbumDTO al : lista) {
 			String sql = "INSERT INTO album VALUES ("
@@ -111,7 +116,7 @@ public class AlbumDAOImpSQLite implements AlbumDAO {
 			return false;
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}

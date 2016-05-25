@@ -37,7 +37,7 @@ public class ConexionBD {
 		}
 		return conexion;
 	}
-
+	
 	static class  MiShoutdownHuk extends Thread{
 		@Override
 		public void run() {

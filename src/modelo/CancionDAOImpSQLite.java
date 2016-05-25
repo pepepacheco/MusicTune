@@ -1,15 +1,18 @@
 package modelo;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+/**
+ * @author Rafael Vargas del Moral
+ * @version 1.0
+ */
 
 public class CancionDAOImpSQLite implements CancionDAO {
-	private Connection conexion = ConexionBD.getConexion();
+	private Connection conexion = ConexionBD.getConexion(); //conexión única
 	private static PreparedStatement sentenciaPreparada;
 	private static Statement sentencia;
 	
@@ -63,7 +66,7 @@ public class CancionDAOImpSQLite implements CancionDAO {
 			return false;
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}
@@ -93,6 +96,11 @@ public class CancionDAOImpSQLite implements CancionDAO {
 		return true;
 	}
 	
+	/**
+	 * Método que añade todas las canciones a la base de datos desde una lista dinámica
+	 * @param lista Lista de Canciones
+	 * @return true si las canciones han sido añadidas correctamente
+	 */
 	public boolean addCancion(List<CancionDTO> lista) {		
 		for (CancionDTO c : lista) {
 			String sql = "INSERT INTO cancion VALUES ("
@@ -118,17 +126,18 @@ public class CancionDAOImpSQLite implements CancionDAO {
 	
 	@Override
 	public boolean borrarCancion(CancionDTO c) {
-		String sql = "DELETE FROM cancion WHERE nombre = ? ;";
+		String sql = "DELETE FROM cancion WHERE nombre = ? and album = ? ;";
 		try {
 			sentenciaPreparada = conexion.prepareStatement(sql);
 			sentenciaPreparada.setString(1, c.getNombreCancion());
+			sentenciaPreparada.setString(2, c.getNombreAlbum());
 			sentenciaPreparada.executeUpdate();
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			return false;
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}

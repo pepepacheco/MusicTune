@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Set;
 
 public class ArtistaDAOImpSQLite implements ArtistaDAO {
-	private Connection conexion = ConexionBD.getConexion();
+	private Connection conexion = ConexionBD.getConexion(); //conexion única
 	private static PreparedStatement sentenciaPreparada;
 	private static Statement sentencia;
 
@@ -46,7 +46,7 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 			//e.printStackTrace();
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}
@@ -74,6 +74,11 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 		return true;
 	}
 	
+	/**
+	 * Método que añade todos los artistas a la base de datos desde una lista dinámica
+	 * @param lista
+	 * @return true si los artistas han sido añadidos correctamente
+	 */
 	public boolean addArtista(Set<ArtistaDTO> lista) {
 		for (ArtistaDTO a : lista) {		
 			String sql = "INSERT INTO artista VALUES ("
@@ -107,7 +112,7 @@ public class ArtistaDAOImpSQLite implements ArtistaDAO {
 			return false;
 		} finally {
 			try {
-				sentencia.close();
+				sentenciaPreparada.close();
 			} catch (SQLException e) {
 				//e.printStackTrace();
 			}

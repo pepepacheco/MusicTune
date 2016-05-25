@@ -11,7 +11,7 @@ public class ArtistaDTO {
      */
     public ArtistaDTO(String nombre) {
         this.nombreArtista = nombre;      
-        addArtista();
+        addArtista(); //Al crearse el objeto automaticamente se añade a una lista dinámica
     }
 
     /**
@@ -50,7 +50,7 @@ public class ArtistaDTO {
 			return false;
 		return true;
 	}
-	
+	//Método que añade el artista a una lista dinámica
 	private boolean addArtista() {
 		return PlayList.getListaArtistas().add(this);
 	}

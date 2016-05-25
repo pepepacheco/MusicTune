@@ -22,7 +22,7 @@ public class AlbumDTO {
         else
             throw new InvalidYearException();
         
-        addAlbum();
+        addAlbum(); //Al crearse el objeto automaticamente se añade a una lista dinámica
     }
 
     /**
@@ -64,6 +64,7 @@ public class AlbumDTO {
 		return true;
 	}
 	
+	//Método que añade la canción a una lista dinámica
 	private boolean addAlbum() {
 		return PlayList.getListaAlbumes().add(this);
 	}
